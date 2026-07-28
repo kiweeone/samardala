@@ -1025,8 +1025,12 @@ const P = {
   gTrans:'#E9EE7C', gSheen:'#EDF0C8', gDry:'#D9C079',
   gPatchA:'#87AC4B', gPatchB:'#6C9A56', gPatchC:'#9DBC5E', gPatchD:'#5F8A5A',
   // samardala — glaucous, blue-grey, colder and darker than the hay around it
-  samBase:'#101F20', samMid:'#1A322D', samUpper:'#264036', samTip:'#324C3E',
-  samBloom:'#C9B98E', samBell:'#DCCFA6', samStripe:'#8E5A62', samMouth:'#F2ECDC',
+  /*  Four rounds of darkening took this to near-black, which is not what a
+      stand of samardala looks like — the leaves in March are a strong,
+      saturated green, deeper and bluer than hay but emphatically alive.
+      Saturation is what separates it from the meadow, not darkness.        */
+  samBase:'#1C4527', samMid:'#2C6B33', samUpper:'#3E8B3D', samTip:'#59A54D',
+  samBloom:'#A8C489', samBell:'#DCCFA6', samStripe:'#8E5A62', samMouth:'#F2ECDC',
   // дядо Жельо
   omCoat:'#39414E', omCoatLit:'#525C6B', omVest:'#6E4C3A', omShirt:'#D9CEB7',
   omSkin:'#C79A75', omHair:'#E6E2D8', omStick:'#7A6244', omBasket:'#A9834F',
@@ -1035,7 +1039,7 @@ const P = {
   samUmStem:'#7E9366', samUmBell:'#E8DFC4', samUmStripe:'#B4737E',
   samUmMouth:'#F7F2E4', samUmBud:'#C08E97', samUmBudTip:'#8A9B6C',
   // what little light gets through a waxy leaf, and how it catches a gust
-  samTrans:'#54805C', samSheen:'#7E9E82',
+  samTrans:'#4C9A44', samSheen:'#82C066',
   // terrain
   tLit:'#93B159', tMid:'#6A924F', tShade:'#456A54', tHollow:'#33564F',
   ridgeNear:'#8FA9A2', ridgeMid:'#9CB0B4', ridgeFar:'#AEBCC9', ridgeFurthest:'#BFC8D4',
@@ -3234,7 +3238,7 @@ void main(){
   if(samF > 0.001){
     vec3 sLit = mix(${C.samMid}, ${C.samUpper}, smoothstep(0.10, 0.62, t));
     sLit = mix(sLit, ${C.samTip}, smoothstep(0.70, 1.00, t));
-    sLit = mix(sLit, ${C.samBloom}, smoothstep(0.55, 1.00, t)*0.20);
+    sLit = mix(sLit, ${C.samBloom}, smoothstep(0.72, 1.00, t)*0.12);
     vec3 sMid = mix(${C.samBase}, ${C.samMid}, smoothstep(0.05, 0.80, t));
     vec3 sShd = mix(${C.samBase}*0.78, ${C.samBase}, smoothstep(0.15, 0.95, t));
     /*  The scape: green stem for two thirds, then the umbel — cream bells
@@ -3286,7 +3290,7 @@ ${ tier <= 1 ? `  float sh = sunShadow(vW, ndl) * cloudShadow(vW);`
 
       A samardala leaf is thick, waxy and glaucous.  Very little light gets
       through it, and what does is green, not straw.                        */
-  s.trans  = 1.00*smoothstep(0.12,0.68,t) * mix(1.0, 0.20, samF);
+  s.trans  = 1.00*smoothstep(0.12,0.68,t) * mix(1.0, 0.42, samF);
   s.transCol = mix(${C.gTrans}, ${C.samTrans}, samF);
   s.rim = 0.34*(0.25 + 0.75*nearK); s.ao = vAO; s.ambient = 1.0;
   vec3 col = paint(s);
@@ -6549,7 +6553,7 @@ let sceneRT, bloomRTs=[], upRTs=[], softRT=[], shadowRT=null, windRT=null, reflR
 let composite, brightMat, downMats=[], upMats=[], blurMats=[], windMat, windViewMat, softDownMat;
 const audio = new Audio();
 let walker, grass, smoke, motes, birdsP, cloudObj, skyMesh, waterMesh, terrainMesh;
-let trees=[], ridges=[], reflectSet=[];
+let trees=[], ridges=[], reflectSet=[], shadowCullUnis=[];
 let millWheel=null, villageSmokers=[], proxyTerrain=null, puffRT=null;
 let cloudShRT=null, cloudShMat=null, lifeGroup=null;
 
@@ -6787,6 +6791,7 @@ async function boot(){
     // shadow-volume radius without the beauty pass inheriting it
     const dUni = U({ uTreeH:{value:heightOf[kind]}, uFlex:{value:flexOf[kind]},
                      uCullR:{value:CFG.shadowSpan*0.76} });
+    shadowCullUnis.push(dUni);
     const m = new THREE.Mesh(geom, RSM(TREE_VS(), TREE_FS(), uni, {side:THREE.DoubleSide}));
     m.frustumCulled=false; m.renderOrder=2;
     m.userData.depth = DSM(TREE_VS(), dUni, {side:THREE.DoubleSide});
@@ -7218,13 +7223,24 @@ function updateCullCone(){
 }
 function shadowPass(){
   _tmpF.set(0,0,-1).applyQuaternion(camera.quaternion);
-  const span = CFG.shadowSpan;
+  /*  The shadow map is one cascade, 480 m across, centred ahead of the walker.
+      On foot you never reach its edge.  From the air you look straight down at
+      it, and the boundary between "has shadows" and "has none" reads as a big
+      soft-edged wedge across the valley.  Grow the span with altitude: the
+      map gets coarser as you climb, which is exactly when you stop being able
+      to resolve a blade's shadow anyway.                                    */
+  const alt  = Math.max(0, camera.position.y - sampleHeight(camera.position.x, camera.position.z));
+  const span = CFG.shadowSpan * clamp(1.0 + alt/85.0, 1.0, 4.0);
   const texel = span/shadowRT.width*2;
   let cx = camera.position.x + _tmpF.x*span*0.30;
   let cz = camera.position.z + _tmpF.z*span*0.30;
   cx = Math.round(cx/texel)*texel; cz = Math.round(cz/texel)*texel;
   // trees cull against the map's own centre, not the camera's
   G.uShadowC.value.set(cx, cz);
+  // every shadow-volume cull radius was baked from the fixed span; with the
+  // span now moving they have to follow, or trees stop casting at the rim and
+  // we have simply traded one visible boundary for another
+  for(const u of shadowCullUnis) u.uCullR.value = span*0.76;
   const cy = sampleHeight(cx,cz);
   sunCam.left=-span/2; sunCam.right=span/2; sunCam.top=span/2; sunCam.bottom=-span/2;
   // a 13.5° sun sits almost on the horizon, so the light camera has to stand a
