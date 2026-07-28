@@ -254,6 +254,32 @@
   #about p{font-size:16.5px;line-height:1.78;margin-bottom:16px}
   #about em{font-style:italic}
   #about a{color:inherit}
+  /* ---------- the plates ---------- */
+  #about .plate{margin:36px 0 34px;cursor:zoom-in}
+  #about .plate img{display:block;width:100%;height:auto;border-radius:3px;
+    background:#F2EAD6;box-shadow:0 2px 26px rgba(42,51,65,.16);
+    transition:box-shadow .3s,transform .3s}
+  #about .plate:hover img{box-shadow:0 6px 38px rgba(42,51,65,.26);transform:translateY(-2px)}
+  #about figcaption{margin-top:12px;font-size:13px;line-height:1.6;opacity:.55;
+    font-style:italic}
+
+  /* full-bleed on wide screens, so a plate is not a postage stamp */
+  @media (min-width:900px){
+    #about .plate{width:min(880px,88vw);margin-left:calc(330px - min(440px,44vw));
+      margin-right:calc(330px - min(440px,44vw))}
+    #about figcaption{max-width:660px;margin-left:auto;margin-right:auto}
+  }
+
+  /* ---------- lightbox ---------- */
+  #lightbox{position:fixed;inset:0;z-index:60;display:none;place-items:center;
+    background:rgba(16,20,26,.94);padding:34px;cursor:zoom-out}
+  #lightbox.on{display:grid}
+  #lightbox img{max-width:96vw;max-height:90vh;border-radius:4px;
+    box-shadow:0 10px 60px rgba(0,0,0,.5);background:#F2EAD6}
+  #lightbox .hint{position:fixed;bottom:20px;left:0;right:0;text-align:center;
+    font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:#F6ECD8;
+    opacity:.42}
+
   #about .sig-out{margin-top:52px;padding-top:22px;font-size:11px;letter-spacing:.2em;
     text-transform:uppercase;opacity:.45;border-top:1px solid rgba(42,51,65,.16)}
   #aboutX{position:fixed;top:18px;right:18px;width:42px;height:42px;border-radius:21px;
@@ -772,6 +798,11 @@
       hills above Stara Zagora. Cut in March, pounded with salt, dried thirty days
       in the shade, and never, under any circumstances, cooked.</p>
 
+
+    <figure class="plate " data-src="plates/plate1-plant.svg">
+      <img src="plates/plate1-plant.svg" alt="Botanical plate of Allium siculum subsp. bulgaricum" loading="lazy" decoding="async">
+      <figcaption>The whole plant &mdash; bulb, strap leaves, scape and umbel, with the flower studied from above and in section.</figcaption>
+    </figure>
     <h2>What it is</h2>
     <p>Samardala is a wild allium. Botanists have moved it about — for most of the
       twentieth century it was <i>Nectaroscordum siculum</i>, and horticulture still
@@ -810,12 +841,22 @@
       the earth to look at it more closely, and he took it by the leaves. They
       turned in his hand. That is why they are twisted.</p>
 
+
+    <figure class="plate " data-src="plates/plate2-flower.svg">
+      <img src="plates/plate2-flower.svg" alt="The umbel of samardala in flower" loading="lazy" decoding="async">
+      <figcaption>Late May: the umbel opens. Six pointed tepals, a maroon throat, gold anthers.</figcaption>
+    </figure>
     <h2>The year</h2>
     <p>The leaves come up in March, and that is when they are cut — before the seed.
       Only the leaves. The bulb stays in the ground, and this is the one rule that
       matters: lift the bulb and there is nothing there next spring, and nothing for
       anyone else's children either. A stand of samardala is a thing you inherit.</p>
 
+
+    <figure class="plate " data-src="plates/plate3-bundle.svg">
+      <img src="plates/plate3-bundle.svg" alt="A tied bundle of cut samardala leaves" loading="lazy" decoding="async">
+      <figcaption>March. The leaves only, cut and tied &mdash; the bulb stays in the ground.</figcaption>
+    </figure>
     <h2>The making</h2>
     <p>The leaves are chopped and crushed with salt at roughly equal weight. The old
       way was a large mortar; a mincer does it now. Either way the work is done in
@@ -826,6 +867,11 @@
       that and it turns brown, and brown samardala is a wasted year. It goes into
       jars, ideally opaque ones. The green fades over the months. The taste does not.</p>
 
+
+    <figure class="plate " data-src="plates/plate4-salt.png">
+      <img src="plates/plate4-salt.png" alt="Dried samardala and salt in a white dish" loading="lazy" decoding="async">
+      <figcaption>The finished thing: leaf and salt in equal weight, thirty days in the shade.</figcaption>
+    </figure>
     <h2>At the table</h2>
     <p>Raw, always. Heat takes the whole character out of it, so it goes on at the
       end or not at all. It belongs on tomatoes above everything else, and on eggs
@@ -856,6 +902,8 @@
       <a href="https://www.kiwee.one/" target="_blank" rel="noopener">kiwee.one</a></p>
   </div>
 </article>
+
+<div id="lightbox"><img alt=""><div class="hint">click anywhere, or esc, to close</div></div>
 
 <div id="pins"></div>
 
@@ -7832,6 +7880,9 @@ function bindInput(){
     if(e.code==='KeyF'){ walker.fly=!walker.fly; toast(walker.fly?'flight — space/ctrl, look to steer':'walking'); }
     if(e.code==='Space') e.preventDefault();
     if(e.code==='Escape'){
+      if($('#lightbox').classList.contains('on')){
+        $('#lightbox').classList.remove('on'); return;
+      }
       if(!$('#about').hidden){ closeAbout(); return; }
       if($('#talk').classList.contains('on')) { dismiss(); return; }
       if(document.exitPointerLock) document.exitPointerLock();
@@ -7859,6 +7910,18 @@ function bindInput(){
   });
   $('#readBtn').addEventListener('click', openAbout);
   $('#aboutX').addEventListener('click', closeAbout);
+
+  /*  Lightbox.  Three of the four plates are vector and lose nothing at full
+      screen, so they are worth being able to open properly.                 */
+  const lb = $('#lightbox'), lbImg = lb.querySelector('img');
+  document.querySelectorAll('#about .plate').forEach(fig=>{
+    fig.addEventListener('click', ()=>{
+      lbImg.src = fig.dataset.src;
+      lbImg.alt = fig.querySelector('img').alt;
+      lb.classList.add('on');
+    });
+  });
+  lb.addEventListener('click', ()=> lb.classList.remove('on'));
 
   addEventListener('blur', ()=>{ walker.keys={}; });
 
