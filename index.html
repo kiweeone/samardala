@@ -1025,12 +1025,15 @@ const P = {
   gTrans:'#E9EE7C', gSheen:'#EDF0C8', gDry:'#D9C079',
   gPatchA:'#87AC4B', gPatchB:'#6C9A56', gPatchC:'#9DBC5E', gPatchD:'#5F8A5A',
   // samardala — glaucous, blue-grey, colder and darker than the hay around it
-  samBase:'#16292A', samMid:'#22403A', samUpper:'#325244', samTip:'#436350',
+  samBase:'#101F20', samMid:'#1A322D', samUpper:'#264036', samTip:'#324C3E',
   samBloom:'#C9B98E', samBell:'#DCCFA6', samStripe:'#8E5A62', samMouth:'#F2ECDC',
   // дядо Жельо
   omCoat:'#39414E', omCoatLit:'#525C6B', omVest:'#6E4C3A', omShirt:'#D9CEB7',
   omSkin:'#C79A75', omHair:'#E6E2D8', omStick:'#7A6244', omBasket:'#A9834F',
   totemOak:'#6B5138', totemLit:'#8A6C4A', totemCap:'#5A4430', totemBand:'#9A7C4E',
+  // the flower, read off the photograph
+  samUmStem:'#7E9366', samUmBell:'#E8DFC4', samUmStripe:'#B4737E',
+  samUmMouth:'#F7F2E4', samUmBud:'#C08E97', samUmBudTip:'#8A9B6C',
   // terrain
   tLit:'#93B159', tMid:'#6A924F', tShade:'#456A54', tHollow:'#33564F',
   ridgeNear:'#8FA9A2', ridgeMid:'#9CB0B4', ridgeFar:'#AEBCC9', ridgeFurthest:'#BFC8D4',
@@ -2863,6 +2866,7 @@ uniform float uWindGain;
 uniform float uPlayerPush;
 ${GL_HASH}${GL_NOISE}${GL_TERRAIN}${GL_WIND}
 in vec2 iPos;
+float vSamF = 0.0, vStalkF = 0.0;   // set once the mask is known, read by wprof
 ${ depthOnly ? '' : `
 out vec3  vW;
 out vec3  vN;
@@ -2992,6 +2996,7 @@ void main(){
       plant its other name.  They are what makes a stand legible from far
       enough away to walk toward.                                           */
   float stalk = sam * step(0.920, rH);
+  vSamF = sam; vStalkF = stalk;
   hgt *= mix(1.0, 1.20, sam);          // just clears the hay, no more
   hgt *= mix(1.0, 1.55, stalk);        // the scape stands over the leaves
   hgt = min(hgt, mix(1.10, 1.62, sam));   // and nothing clears the totems
@@ -3091,6 +3096,12 @@ void main(){
   // over the length of a blade and it is one transcendental fewer per vertex
   float wprof = sqrt(1.0 - t) * (0.60 + 0.42*smoothstep(0.0, 0.16, t));
   wprof = mix(wprof, wprof*1.9, head*smoothstep(0.80, 0.99, t));
+  /*  Grass tapers on a square root — broad most of its length, then a quick
+      point.  A samardala leaf does not: it is a long triangle, widest at the
+      sheath and running dead straight to a tip.  Swapping the profile is what
+      makes a field read as a different plant rather than as dyed grass.     */
+  float triProf = (1.0 - t) * (0.42 + 0.90*smoothstep(0.0, 0.07, t));
+  wprof = mix(wprof, triProf, vSamF*(1.0 - vStalkF));
   float u = (vtx.x - 0.5);
   vec3 sideW = normalize(side - tang*dot(side, tang) + vec3(1e-6));
   vec3 pos = c + sideW * (u * wid * wprof * 2.0 * fade);
@@ -4674,6 +4685,140 @@ function buildOldMan(){
   B( 0.315, 0.94, 0.125, 0.064, 0.092, 0.055, LC('samMid'), 0.2);
   return finishPainted(M);
 }
+
+/*──────────────────────────── THE UMBELS ───────────────────────────────────
+    The flower, built from the photograph rather than faked in the grass
+    shader.  A scape to about a metre and a third, a node, then eleven
+    pedicels arcing outward and down, each carrying a bell — a tapered
+    six-sided tube, cream with a maroon stripe on alternate faces, flaring to
+    a pale mouth.  Five buds stand upright above on shorter stalks, closed and
+    pink-green, the way they are before they open.
+
+    Merged into one geometry rather than instanced: five hundred umbels is a
+    rounding error next to 800k blades, and merging lets each one carry its
+    own ground anchor for the wind without an instanced attribute stride.   */
+
+// a 4-sided prism between two points, for scapes and pedicels
+function pseg(M, ax,ay,az, bx,by,bz, rad, col){
+  let dx=bx-ax, dy=by-ay, dz=bz-az;
+  const L=Math.hypot(dx,dy,dz)||1; dx/=L; dy/=L; dz/=L;
+  let ux=0,uy=1,uz=0;
+  if(Math.abs(dy)>0.94){ ux=1; uy=0; }
+  let sx=uy*dz-uz*dy, sy=uz*dx-ux*dz, sz=ux*dy-uy*dx;
+  const sl=Math.hypot(sx,sy,sz)||1; sx/=sl; sy/=sl; sz/=sl;
+  const tx=dy*sz-dz*sy, ty=dz*sx-dx*sz, tz=dx*sy-dy*sx;
+  const ring=[];
+  for(const [a0,b0] of [[1,0],[0,1],[-1,0],[0,-1]]){
+    const nx=sx*a0+tx*b0, ny=sy*a0+ty*b0, nz=sz*a0+tz*b0;
+    ring.push([
+      pv(M, ax+nx*rad, ay+ny*rad, az+nz*rad, nx,ny,nz, col, 0),
+      pv(M, bx+nx*rad, by+ny*rad, bz+nz*rad, nx,ny,nz, col, 0)
+    ]);
+  }
+  for(let i=0;i<4;i++){
+    const A=ring[i], B=ring[(i+1)%4];
+    pq(M, A[0], A[1], B[1], B[0]);
+  }
+}
+
+// a tapered tube: the bell, and the buds
+function ptube(M, cx,cy,cz, h, rTop, rBot, sides, colA, colB, colRim){
+  const top=[], bot=[];
+  for(let i=0;i<sides;i++){
+    const a=i/sides*Math.PI*2, ca=Math.cos(a), sa=Math.sin(a);
+    const col = (colB && (i%2)) ? colB : colA;
+    top.push(pv(M, cx+ca*rTop, cy,   cz+sa*rTop, ca,0.25,sa, col, 0));
+    bot.push(pv(M, cx+ca*rBot, cy-h, cz+sa*rBot, ca,-0.1,sa, colRim||col, 0));
+  }
+  for(let i=0;i<sides;i++){
+    const j=(i+1)%sides;
+    pq(M, top[i], bot[i], bot[j], top[j]);
+  }
+  return bot;
+}
+
+/*  One geometry PER FIELD, not one for the valley.  A single merged mesh has
+    a bounding sphere covering the whole map, so `frustumCulled` can never
+    reject it and all ~170k triangles are submitted every frame even when you
+    are stood a kilometre away facing the other direction.  Eight meshes cull
+    independently, and in practice one or two are on screen at a time.       */
+function buildUmbels(){
+  const out = [];
+  const stem=LC('samUmStem'), bell=LC('samUmBell'), stripe=LC('samUmStripe'),
+        mouth=LC('samUmMouth'), bud=LC('samUmBud'), budTip=LC('samUmBudTip');
+  let rnd = 20260728;
+  const R = ()=>{ rnd = (rnd*1664525 + 1013904223) & 0x7fffffff; return rnd/0x7fffffff; };
+
+  SAMARDALA.forEach(st=>{
+    const M = PB();
+    const base = [];                  // vec4 per vertex: ground anchor + scape height
+    const n = Math.min(78, Math.max(18, Math.round(Math.PI*st.r*st.r/20)));
+    for(let k=0;k<n;k++){
+      const a = R()*Math.PI*2;
+      const rr = st.r*(0.16 + 0.64*Math.sqrt(R()));
+      const x = st.x + Math.cos(a)*rr, z = st.z + Math.sin(a)*rr;
+      const y0 = sampleHeight(x, z) - 0.04;
+      const H  = 1.16 + R()*0.34;                 // head height above ground
+      const S  = 0.80 + R()*0.34;                 // overall size of the head
+      const v0 = M.n;
+
+      pseg(M, x, y0, z, x, y0+H, z, 0.011*S, stem);
+      const ny = y0 + H;
+
+      const nb = 9 + (R()*4|0);
+      for(let i=0;i<nb;i++){
+        const pa = (i/nb)*Math.PI*2 + R()*0.22;
+        const pl = (0.13 + R()*0.075)*S;
+        const ex = x + Math.cos(pa)*pl, ez = z + Math.sin(pa)*pl;
+        const ey = ny - (0.035 + R()*0.030)*S;
+        pseg(M, x, ny, z, ex, ey, ez, 0.0045*S, stem);
+        ptube(M, ex, ey, ez, (0.052+R()*0.018)*S,
+              0.009*S, (0.026+R()*0.006)*S, 6, bell, stripe, mouth);
+      }
+      const nu = 3 + (R()*3|0);
+      for(let i=0;i<nu;i++){
+        const pa = (i/nu)*Math.PI*2 + R()*0.5;
+        const pl = (0.055 + R()*0.045)*S;
+        const ex = x + Math.cos(pa)*pl, ez = z + Math.sin(pa)*pl;
+        const ey = ny + (0.075 + R()*0.055)*S;
+        pseg(M, x, ny, z, ex, ey, ez, 0.0042*S, stem);
+        ptube(M, ex, ey + 0.030*S, ez, 0.048*S, 0.004*S, 0.013*S, 4, bud, null, budTip);
+      }
+      for(let v=v0; v<M.n; v++) base.push(x, y0, z, H);
+    }
+    const g = finishPainted(M);
+    g.setAttribute('aBase', new THREE.BufferAttribute(new Float32Array(base), 4));
+    // the wind bend moves vertices, so pad the sphere or heads pop at the edge
+    g.boundingSphere.radius += 0.6;
+    out.push(g);
+  });
+  return out;
+}
+
+/*  Same fragment shader as the village — all the light, shadow and air lives
+    there — with a vertex stage that bends the head in the same wind field the
+    grass reads, so the flowers move with the meadow instead of standing in it
+    like fenceposts.                                                        */
+const UMBEL_VS = ()=> /* glsl */`
+${GL_UNI}
+${GL_HASH}${GL_NOISE}${GL_TERRAIN}${GL_WIND}
+in vec3 nrm; in vec3 vcol; in float vmat; in vec4 aBase;
+out vec3 vW; out vec3 vN; out vec3 vC; out float vM; out float vDist;
+void main(){
+  vec3 p = position;
+  float h = clamp((p.y - aBase.y) / max(aBase.w, 0.05), 0.0, 1.0);
+  float k = h*h;                                  // a cantilever, not a hinge
+  vec4  Wf = windSample(aBase.xz);
+  p.xz += Wf.xy * k * 0.055;
+  p.y  -= dot(Wf.xy, Wf.xy) * k * 0.004;          // bending shortens it
+  // its own phase, so a field is a crowd rather than a rigid body
+  float ph = hash12(aBase.xz*2.7)*6.2831853;
+  p.xz += vec2(sin(uTime*2.30 + ph), cos(uTime*1.87 + ph)) * k * (0.008 + Wf.z*0.011);
+  vec4 wp = modelMatrix*vec4(p,1.0);
+  vW = wp.xyz; vN = normalize(mat3(modelMatrix)*nrm); vC = vcol; vM = vmat;
+  vec4 mv = viewMatrix*wp; vDist = -mv.z;
+  gl_Position = projectionMatrix*mv;
+}`;
 
 /*──────────────────────────── THE TOTEMS ───────────────────────────────────
     A weathered oak post at the centre of every field, 3.4 m so it stands well
@@ -6604,6 +6749,20 @@ async function boot(){
   totems.userData.depth = vMesh.userData.depth;
   totems.frustumCulled = false; totems.renderOrder = 2;
   scene.add(totems); reflectSet.push(totems);
+
+  /*── the flower ──*/
+  setStat('the bells opening', 0.86); await idle();
+  const umbelMat   = RSM(UMBEL_VS(), PAINTED_FS(), U(), {side:THREE.DoubleSide});
+  const umbelDepth = DSM(UMBEL_VS(), U(), {side:THREE.DoubleSide});
+  let umbelTris = 0;
+  buildUmbels().forEach((g, i)=>{
+    const m = new THREE.Mesh(g, umbelMat);
+    m.userData.depth = umbelDepth;
+    m.frustumCulled = true; m.renderOrder = 2;
+    umbelTris += g.index.count/3;
+    scene.add(m); reflectSet.push(m);
+  });
+  console.log('umbels:', umbelTris|0, 'triangles across', SAMARDALA.length, 'culled meshes');
 
   /*── дядо Жельо ──*/
   OldMan.obj = new THREE.Mesh(buildOldMan(), paintedMat);
