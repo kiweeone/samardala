@@ -27,6 +27,79 @@
 <meta name="twitter:description" content="The herb of Stara Zagora: cut in March, pounded with salt, dried thirty days in the shade.">
 <meta name="twitter:image" content="https://samardala.com/og.png">
 <meta name="theme-color" content="#1C2431">
+<meta name="keywords" content="samardala, самардала, Allium siculum bulgaricum, Nectaroscordum siculum, Bulgarian honey garlic, Stara Zagora, sharena sol, Bulgarian herbs, Konare, Kolena">
+<link rel="alternate" type="text/markdown" href="/llms.txt">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://samardala.com/#website",
+      "url": "https://samardala.com/",
+      "name": "Samardala",
+      "inLanguage": "en",
+      "description": "Samardala — the herb of Stara Zagora. An interactive procedural valley."
+    },
+    {
+      "@type": "Article",
+      "@id": "https://samardala.com/#article",
+      "isPartOf": { "@id": "https://samardala.com/#website" },
+      "headline": "Samardala — Allium siculum subsp. bulgaricum, the herb of Stara Zagora",
+      "description": "Cut in March, pounded one-to-one with salt, dried thirty days in the shade and never cooked. The botany, the name, the method and the region behind samardala.",
+      "image": "https://samardala.com/og.png",
+      "inLanguage": "en",
+      "about": [
+        { "@id": "https://samardala.com/#taxon" },
+        { "@type": "Place", "name": "Stara Zagora Province, Bulgaria" }
+      ],
+      "mentions": [
+        { "@type": "Place", "name": "Konare, Gurkovo Municipality, Bulgaria" },
+        { "@type": "Place", "name": "Kolena, Stara Zagora Municipality, Bulgaria" }
+      ]
+    },
+    {
+      "@type": "Taxon",
+      "@id": "https://samardala.com/#taxon",
+      "name": "Allium siculum subsp. bulgaricum",
+      "alternateName": [
+        "samardala", "самардала", "Nectaroscordum siculum subsp. bulgaricum",
+        "Allium bulgaricum", "Bulgarian honey garlic", "Sicilian honey lily",
+        "Mediterranean bells"
+      ],
+      "taxonRank": "subspecies",
+      "parentTaxon": { "@type": "Taxon", "name": "Allium siculum" }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://samardala.com/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is samardala?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Samardala is Allium siculum subsp. bulgaricum, a wild allium of the Balkans. In south-eastern Bulgaria its leaves are cut in March, pounded with an equal weight of salt and dried for thirty days in the shade to make a green condiment." }
+        },
+        {
+          "@type": "Question",
+          "name": "How is samardala used?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Raw and never cooked, because heat destroys its character. It goes on tomatoes, eggs, potatoes, rice, bread and butter, and especially on crumbled sirene. It is already salty, so no further salt is added." }
+        },
+        {
+          "@type": "Question",
+          "name": "Where does samardala grow?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The plant is native to Bulgaria, Greece, Turkey, Romania and Crimea, growing in damp shade under beech and hornbeam. It is not endemic to Bulgaria — what is regionally specific is the practice of making the salted, dried condiment, which is concentrated in the Stara Zagora region." }
+        },
+        {
+          "@type": "Question",
+          "name": "Why is samardala called samardala?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Local tradition derives the name from samar, the packsaddle of a horse, after the way the stiff triangular leaves stand upright out of the ground." }
+        }
+      ]
+    }
+  ]
+}
+</script>
 <style>
   :root{
     --cream:#F6ECD8; --ink:#3A4356; --warm:#E8C98A; --teal:#4E7F79;
@@ -148,6 +221,40 @@
   .pin:hover i{background:rgba(246,236,216,.85)}
   body.locked .pin{pointer-events:none}
 
+  /* ---------- the long read ---------- */
+  #about{position:fixed;inset:0;z-index:40;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    background:#F3EEE0;color:#2A3341;padding:0 0 90px;
+    font-family:'Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif}
+  #about[hidden]{display:none}
+  #about .wrap{max-width:660px;margin:0 auto;padding:76px 26px 0}
+  #about .eyebrow{font-size:11px;letter-spacing:.42em;opacity:.5;margin-bottom:14px}
+  #about h1{font-size:clamp(40px,7vw,62px);font-weight:400;letter-spacing:-.01em;
+    line-height:1.05;margin-bottom:20px}
+  #about .lede{font-size:18px;line-height:1.7;opacity:.8;margin-bottom:14px;
+    padding-bottom:26px;border-bottom:1px solid rgba(42,51,65,.16)}
+  #about h2{font-size:13px;letter-spacing:.24em;text-transform:uppercase;
+    font-weight:400;opacity:.55;margin:40px 0 14px}
+  #about p{font-size:16.5px;line-height:1.78;margin-bottom:16px}
+  #about em{font-style:italic}
+  #about a{color:inherit}
+  #about .sig-out{margin-top:52px;padding-top:22px;font-size:11px;letter-spacing:.2em;
+    text-transform:uppercase;opacity:.45;border-top:1px solid rgba(42,51,65,.16)}
+  #aboutX{position:fixed;top:18px;right:18px;width:42px;height:42px;border-radius:21px;
+    border:1px solid rgba(42,51,65,.22);background:#F3EEE0;color:#2A3341;
+    font-family:inherit;font-size:22px;line-height:1;cursor:pointer;z-index:41;
+    -webkit-tap-highlight-color:transparent}
+  #aboutX:hover{background:#E7E0CD}
+
+  #readBtn{position:fixed;left:20px;top:16px;z-index:22;font-size:10px;
+    letter-spacing:.24em;text-transform:uppercase;color:#F6ECD8;background:none;
+    border:0;font-family:inherit;cursor:pointer;opacity:0;pointer-events:auto;
+    transition:opacity .8s,color .25s;text-shadow:0 1px 4px rgba(18,24,34,.85);
+    -webkit-tap-highlight-color:transparent;padding:0}
+  #readBtn.on{opacity:.42}
+  #readBtn:hover{opacity:.95;color:#E8C98A}
+  body.locked #readBtn{pointer-events:none}
+  body.touch #readBtn{top:calc(12px + env(safe-area-inset-top));left:16px}
+
   /* ---------- touch: the field dock ---------- */
   #dock{position:fixed;left:0;right:0;bottom:0;z-index:29;display:none;
     padding:12px 12px calc(12px + env(safe-area-inset-bottom));
@@ -223,13 +330,14 @@
 <body>
 <div id="app"></div>
 
+<button id="readBtn">About the herb</button>
 <a id="sig" href="https://www.kiwee.one/" target="_blank" rel="noopener">kiwee.one</a>
 
 <div id="hud">
   <div id="keys" class="k">
     <span><b>WASD</b> walk</span><span><b>Shift</b> run</span><span><b>Mouse</b> look</span>
     <span><b>F</b> fly</span><span><b>Space/Ctrl</b> up&#47;down</span>
-    <span><b>C</b> cinematic</span><span><b>M</b> fields</span><span><b>H</b> settings</span><span><b>Esc</b> release</span>
+    <span><b>C</b> cinematic</span><span><b>M</b> fields</span><span><b>R</b> read</span><span><b>H</b> settings</span><span><b>Esc</b> release</span>
   </div>
   <div id="tele"></div>
 </div>
@@ -635,6 +743,102 @@
       · grass and wind forked from a pen by <a href="https://codepen.io/lentils801" target="_blank" rel="noopener">Lentils</a>, MIT</p>
   </div>
 </div>
+
+
+<article id="about" hidden>
+  <button id="aboutX" aria-label="close">&#215;</button>
+  <div class="wrap">
+
+    <p class="eyebrow">САМАРДАЛА</p>
+    <h1>Samardala</h1>
+    <p class="lede"><i>Allium siculum</i> subsp. <i>bulgaricum</i> — the herb of the
+      hills above Stara Zagora. Cut in March, pounded with salt, dried thirty days
+      in the shade, and never, under any circumstances, cooked.</p>
+
+    <h2>What it is</h2>
+    <p>Samardala is a wild allium. Botanists have moved it about — for most of the
+      twentieth century it was <i>Nectaroscordum siculum</i>, and horticulture still
+      sells it as <i>Allium bulgaricum</i> — but it now sits in <i>Allium</i>
+      subgenus <i>Nectaroscordum</i>, a subgenus containing only two species. The
+      genus name is Greek for <i>nectar garlic</i>.</p>
+    <p>It grows from a bulb in damp shade, typically under beech and hornbeam. The
+      leaves are its signature: blue-grey, triangular in cross-section, and twisted
+      along their length, so they stand stiffly upright while the grass around them
+      lies over in the wind. In May and early June it throws a stem to over a metre
+      carrying drooping bells — cream, with a maroon stripe down each petal, flaring
+      white at the mouth and green at the base. After flowering, the seed pods turn
+      upright. Cut any part of it and it smells of sulphur.</p>
+
+    <h2>Where it belongs</h2>
+    <p>Here is the thing most accounts get wrong, including most Bulgarian ones. The
+      plant is not endemic to Bulgaria. Its range runs through Greece, Turkey,
+      Romania and Crimea, and its sister subspecies grows in Sicily and southern
+      France. Dutch growers sell the bulb across Europe as an ornamental; English
+      gardeners know the flower well and have never heard of the spice.</p>
+    <p>What is regionally particular is the <em>practice</em>. Nobody outside
+      south-eastern Bulgaria cuts these leaves, pounds them with salt, and dries them
+      for a month. That tradition is concentrated in the Stara Zagora, Sliven and
+      Yambol regions, across the Eastern Stara Planina around Kotel and Varbitsa,
+      and in Strandzha. The village of Konare, in Gurkovo municipality, calls itself
+      the capital of samardala and calls the herb its green gold.</p>
+
+    <h2>The name</h2>
+    <p>Local tradition derives it from <i>samar</i> — the packsaddle you put on a
+      horse — after the way the leaves stand up out of the ground. A herb named
+      after a piece of harness, by people who had more horses about them than words
+      to spare.</p>
+
+    <h2>The legend</h2>
+    <p>When God had finished making the grasses, he went to pull this one up out of
+      the earth to look at it more closely, and he took it by the leaves. They
+      turned in his hand. That is why they are twisted.</p>
+
+    <h2>The year</h2>
+    <p>The leaves come up in March, and that is when they are cut — before the seed.
+      Only the leaves. The bulb stays in the ground, and this is the one rule that
+      matters: lift the bulb and there is nothing there next spring, and nothing for
+      anyone else's children either. A stand of samardala is a thing you inherit.</p>
+
+    <h2>The making</h2>
+    <p>The leaves are chopped and crushed with salt at roughly equal weight. The old
+      way was a large mortar; a mincer does it now. Either way the work is done in
+      the yard rather than the house, because the fumes are considerably worse than
+      onion and everyone who has made it has cried over it.</p>
+    <p>Then it dries in shade for thirty days — forty if the spring has been wet — in
+      an airy room kept below thirty degrees, stirred from time to time. Warmer than
+      that and it turns brown, and brown samardala is a wasted year. It goes into
+      jars, ideally opaque ones. The green fades over the months. The taste does not.</p>
+
+    <h2>At the table</h2>
+    <p>Raw, always. Heat takes the whole character out of it, so it goes on at the
+      end or not at all. It belongs on tomatoes above everything else, and on eggs
+      fried or boiled, on potatoes, on rice, on bread and butter, and above all
+      crumbled together with <i>sirene</i>, the Bulgarian white brine cheese. Around
+      Stara Zagora and Nova Zagora it seasons Easter eggs and the lamb at
+      Gergyovden. It also goes into the local version of <i>sharena sol</i>, the
+      "coloured salt", alongside summer savory, paprika and fenugreek.</p>
+    <p>It is already salty. Do not salt on top of it.</p>
+
+    <h2>The festival</h2>
+    <p>Konare has held a samardala festival for over a decade. It opens with a ritual
+      picking in the yard of the village's nineteenth-century church, then the whole
+      village walks down to the square with baskets. In 2026 they crowned a Queen
+      Samardala for the first time and baked a ten-metre loaf to a Konare recipe with
+      the herb through it.</p>
+    <p>And in kitchens in Berlin, London, Chicago and Melbourne there are jars of it
+      that came over in somebody's luggage. For a weed that grows in the shade, that
+      is not a small thing.</p>
+
+    <h2>A note on health claims</h2>
+    <p>Bulgarian popular sources attribute a good deal to samardala — cholesterol,
+      atherosclerosis, and worse. There is no clinical basis for any of it, so none
+      of it is repeated here. The plant is listed under Bulgaria's Medicinal Plants
+      Act of 2002. It is a very good thing to eat, which ought to be enough.</p>
+
+    <p class="sig-out">samardala.com &middot; made by
+      <a href="https://www.kiwee.one/" target="_blank" rel="noopener">kiwee.one</a></p>
+  </div>
+</article>
 
 <div id="pins"></div>
 
@@ -7180,6 +7384,12 @@ function openIndex(){
   if(document.pointerLockElement && document.exitPointerLock) document.exitPointerLock();
 }
 function closeIndex(){ $('#index').classList.remove('on'); }
+function openAbout(){
+  $('#about').hidden = false;
+  document.body.classList.remove('locked');
+  if(document.pointerLockElement && document.exitPointerLock) document.exitPointerLock();
+}
+function closeAbout(){ $('#about').hidden = true; }
 function scrollDockTo(i){
   if(!dockEls || !dockEls[i]) return;
   dockEls[i].scrollIntoView({behavior:'smooth', block:'nearest', inline:'center'});
@@ -7351,12 +7561,14 @@ function bindInput(){
       toast(on ? 'settings — click the view to look again' : '');
     }
     if(e.code==='KeyM'){ toggleIndex(); }
+    if(e.code==='KeyR'){ $('#about').hidden ? openAbout() : closeAbout(); }
     if(e.code==='KeyC'){ walker.cinematic=!walker.cinematic; walker.cineT=0;
       toast(walker.cinematic?'cinematic':'free walk'); }
     if(e.code==='KeyP'){ State.paused=!State.paused; toast(State.paused?'paused':'running'); }
     if(e.code==='KeyF'){ walker.fly=!walker.fly; toast(walker.fly?'flight — space/ctrl, look to steer':'walking'); }
     if(e.code==='Space') e.preventDefault();
     if(e.code==='Escape'){
+      if(!$('#about').hidden){ closeAbout(); return; }
       if($('#talk').classList.contains('on')) { dismiss(); return; }
       if(document.exitPointerLock) document.exitPointerLock();
     }
@@ -7368,6 +7580,7 @@ function bindInput(){
     audio.resume();
     if($('#panel').classList.contains('on')) return;
     if($('#index').classList.contains('on')) return;
+    if(!$('#about').hidden) return;
     if(cv.requestPointerLock) cv.requestPointerLock();
   });
   /*  Pins are DOM and can only be clicked when the pointer is free, so the
@@ -7380,6 +7593,9 @@ function bindInput(){
   addEventListener('mousemove', e=>{
     if(document.pointerLockElement===cv) walker.look(e.movementX, e.movementY);
   });
+  $('#readBtn').addEventListener('click', openAbout);
+  $('#aboutX').addEventListener('click', closeAbout);
+
   addEventListener('blur', ()=>{ walker.keys={}; });
 
   /*  ── drag to look ──────────────────────────────────────────────────
@@ -7444,6 +7660,7 @@ function bindInput(){
     $('#veil').classList.add('gone');
     $('#hud').classList.add('on');
     $('#sig').classList.add('on');
+    $('#readBtn').classList.add('on');
     setTimeout(()=>{ $('#veil').style.display='none'; }, 1700);
     if(IS_TOUCH){
       buildDock(); refreshDock();

@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+# AI crawlers — the site is a WebGL canvas; the readable content is in llms.txt
+# and in the #about section of the homepage.
+User-agent: GPTBot
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://samardala.com/sitemap.xml

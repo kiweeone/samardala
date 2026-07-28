@@ -1,0 +1,70 @@
+# Samardala
+
+> Samardala (Bulgarian: самардала) is *Allium siculum* subsp. *bulgaricum* — a wild
+> allium of the Balkans whose leaves are cut in March, pounded one-to-one with salt,
+> and dried thirty days in the shade to make a green condiment particular to the
+> Stara Zagora region of Bulgaria. samardala.com is an interactive procedural
+> valley in which an old man from the village of Kolena explains the herb.
+
+## Key facts
+
+- **Botanical name**: *Allium siculum* subsp. *bulgaricum*. Long known as
+  *Nectaroscordum siculum* subsp. *bulgaricum*, and sold in horticulture as
+  *Allium bulgaricum*. Family Amaryllidaceae, subgenus *Nectaroscordum*, which
+  contains only two species: *A. siculum* and *A. tripedale*.
+- **English names**: Bulgarian honey garlic, Sicilian honey lily, Mediterranean bells.
+- **Native range**: Bulgaria, Greece, Turkey, Romania, Crimea. The sister
+  subspecies *siculum* grows in Sicily, southern Italy and southern France. The
+  plant is therefore **not endemic to Bulgaria**; the culinary practice is what
+  is regionally specific.
+- **Habitat**: damp shade, typically the understorey of beech and hornbeam forest.
+- **Appearance**: bulb; blue-grey leaves that are triangular in cross-section and
+  strongly twisted along their length; flower stems to 1.2 m carrying drooping
+  bell-shaped blossoms, cream with a maroon stripe and white flaring tips, green at
+  the base. Seed pods turn upright after flowering. Any cut releases a sulphurous smell.
+- **Flowering**: May to early June. **Harvest**: March, leaves only.
+- **Etymology**: local tradition derives the name from *samar*, the packsaddle of a
+  horse, after the way the leaves stand stiffly upright.
+
+## How it is made
+
+1. Cut the leaves in March, before the seed. Never lift the bulb — it stays in the
+   ground so the plant returns the following spring.
+2. Chop and crush the leaves with salt at roughly equal weight. Traditionally
+   pounded in a large mortar, now often minced. The fumes are more punishing than
+   onion, so the work is done outdoors.
+3. Dry in shade for 30–40 days in a well-ventilated room kept below 30 °C, stirring
+   periodically. Above 30 °C it browns and the batch is spoiled.
+4. Store in jars, ideally opaque. The green fades over time; the flavour does not.
+
+## How it is used
+
+Raw, never cooked — heat destroys its character. It is eaten on tomatoes, on fried
+and boiled eggs, on potatoes, rice and bread and butter, and especially with
+crumbled *sirene* (Bulgarian white brine cheese). In the Stara Zagora and Nova
+Zagora regions it traditionally seasons Easter eggs and the lamb at Gergyovden. It
+is also a component of the local version of *sharena sol* ("coloured salt"),
+alongside summer savory, paprika and fenugreek. The mixture is already salty, so no
+further salt is added.
+
+## Places
+
+- **Stara Zagora province, Bulgaria** — the heartland of the practice. Also the
+  Sliven and Yambol regions, the Eastern Stara Planina around Kotel and Varbitsa,
+  and Strandzha.
+- **Kolena** — village in Stara Zagora municipality.
+- **Konare** — village in Gurkovo municipality, locally called the capital of
+  samardala and host to the annual Samardala Fest, which includes a ritual picking
+  in the churchyard and a procession with baskets to the village square.
+
+## Note on health claims
+
+Bulgarian popular sources attribute various medical benefits to samardala. There is
+no clinical evidence for these and they are not repeated here. The plant is listed
+under Bulgaria's Medicinal Plants Act (2002).
+
+## Pages
+
+- [Samardala — the valley](https://samardala.com/): interactive procedural landscape
+  with the herb's story told in eight parts.
+- [The full account](https://samardala.com/#about): long-form history and method.

@@ -1,0 +1,56 @@
+# Samardala
+
+> Source: https://samardala.com/ — the full readable text of the site,
+> for language models and other readers that cannot run WebGL.
+
+*Allium siculum* subsp. *bulgaricum* — the herb of the hills above Stara Zagora. Cut in March, pounded with salt, dried thirty days in the shade, and never, under any circumstances, cooked.
+
+## What it is
+
+Samardala is a wild allium. Botanists have moved it about — for most of the twentieth century it was *Nectaroscordum siculum*, and horticulture still sells it as *Allium bulgaricum* — but it now sits in *Allium* subgenus *Nectaroscordum*, a subgenus containing only two species. The genus name is Greek for *nectar garlic*.
+
+It grows from a bulb in damp shade, typically under beech and hornbeam. The leaves are its signature: blue-grey, triangular in cross-section, and twisted along their length, so they stand stiffly upright while the grass around them lies over in the wind. In May and early June it throws a stem to over a metre carrying drooping bells — cream, with a maroon stripe down each petal, flaring white at the mouth and green at the base. After flowering, the seed pods turn upright. Cut any part of it and it smells of sulphur.
+
+## Where it belongs
+
+Here is the thing most accounts get wrong, including most Bulgarian ones. The plant is not endemic to Bulgaria. Its range runs through Greece, Turkey, Romania and Crimea, and its sister subspecies grows in Sicily and southern France. Dutch growers sell the bulb across Europe as an ornamental; English gardeners know the flower well and have never heard of the spice.
+
+What is regionally particular is the *practice*. Nobody outside south-eastern Bulgaria cuts these leaves, pounds them with salt, and dries them for a month. That tradition is concentrated in the Stara Zagora, Sliven and Yambol regions, across the Eastern Stara Planina around Kotel and Varbitsa, and in Strandzha. The village of Konare, in Gurkovo municipality, calls itself the capital of samardala and calls the herb its green gold.
+
+## The name
+
+Local tradition derives it from *samar* — the packsaddle you put on a horse — after the way the leaves stand up out of the ground. A herb named after a piece of harness, by people who had more horses about them than words to spare.
+
+## The legend
+
+When God had finished making the grasses, he went to pull this one up out of the earth to look at it more closely, and he took it by the leaves. They turned in his hand. That is why they are twisted.
+
+## The year
+
+The leaves come up in March, and that is when they are cut — before the seed. Only the leaves. The bulb stays in the ground, and this is the one rule that matters: lift the bulb and there is nothing there next spring, and nothing for anyone else's children either. A stand of samardala is a thing you inherit.
+
+## The making
+
+The leaves are chopped and crushed with salt at roughly equal weight. The old way was a large mortar; a mincer does it now. Either way the work is done in the yard rather than the house, because the fumes are considerably worse than onion and everyone who has made it has cried over it.
+
+Then it dries in shade for thirty days — forty if the spring has been wet — in an airy room kept below thirty degrees, stirred from time to time. Warmer than that and it turns brown, and brown samardala is a wasted year. It goes into jars, ideally opaque ones. The green fades over the months. The taste does not.
+
+## At the table
+
+Raw, always. Heat takes the whole character out of it, so it goes on at the end or not at all. It belongs on tomatoes above everything else, and on eggs fried or boiled, on potatoes, on rice, on bread and butter, and above all crumbled together with *sirene*, the Bulgarian white brine cheese. Around Stara Zagora and Nova Zagora it seasons Easter eggs and the lamb at Gergyovden. It also goes into the local version of *sharena sol*, the "coloured salt", alongside summer savory, paprika and fenugreek.
+
+It is already salty. Do not salt on top of it.
+
+## The festival
+
+Konare has held a samardala festival for over a decade. It opens with a ritual picking in the yard of the village's nineteenth-century church, then the whole village walks down to the square with baskets. In 2026 they crowned a Queen Samardala for the first time and baked a ten-metre loaf to a Konare recipe with the herb through it.
+
+And in kitchens in Berlin, London, Chicago and Melbourne there are jars of it that came over in somebody's luggage. For a weed that grows in the shade, that is not a small thing.
+
+## A note on health claims
+
+Bulgarian popular sources attribute a good deal to samardala — cholesterol, atherosclerosis, and worse. There is no clinical basis for any of it, so none of it is repeated here. The plant is listed under Bulgaria's Medicinal Plants Act of 2002. It is a very good thing to eat, which ought to be enough.
+
+---
+
+See also https://samardala.com/llms.txt for a structured summary.
