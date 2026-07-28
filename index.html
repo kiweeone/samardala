@@ -4491,9 +4491,29 @@ function buildTotems(){
   return finishPainted(M);
 }
 
+/*  GREET is where he is standing when the valley loads: a short walk ahead
+    of the spawn knoll and outside every field.  He used to start standing IN
+    field A, which meant you were already inside it when he introduced himself
+    — so the field counted as entered, and its own line could never fire.  Now
+    you meet him first, on open ground, and then walk to the field together.  */
+const GREET = { x:0, z:0 };
+function placeGreeting(){
+  const h = CFG.spawn.heading*Math.PI/180;
+  GREET.x = CFG.spawn.x - Math.sin(h)*15;
+  GREET.z = CFG.spawn.z - Math.cos(h)*15;
+  // and never inside a field, however clearStands() ended up moving them
+  for(let i=0;i<80;i++){
+    let hit = null;
+    for(const st of SAMARDALA)
+      if(Math.hypot(GREET.x-st.x, GREET.z-st.z) < st.r + 22) { hit = st; break; }
+    if(!hit) break;
+    const dx = GREET.x-hit.x, dz = GREET.z-hit.z, d = Math.hypot(dx,dz) || 1;
+    GREET.x += dx/d*7; GREET.z += dz/d*7;
+  }
+}
+
 const OldMan = {
   obj:null, target:-1, x:0, z:0, from:null, walk:1, yaw:0,
-  atStand(){ return this.walk >= 1 ? this.target : -1; },
 };
 
 /*  Next stand he has not yet spoken at, nearest to him first.  */
@@ -4513,25 +4533,26 @@ function sendOldManTo(i){
   OldMan.target = i; OldMan.walk = 0;
 }
 
+function manSpot(i){
+  if(i < 0) return [GREET.x, GREET.z];
+  const t = SAMARDALA[i], a = i*2.399963;      // golden angle, so no two match
+  return [t.x + Math.cos(a)*5.2, t.z + Math.sin(a)*5.2];  // the totem owns the centre
+}
+
 function updateOldMan(dt){
-  if(!OldMan.obj || OldMan.target<0) return;
-  const t = SAMARDALA[OldMan.target];
-  if(OldMan.walk < 1){
-    const d = Math.hypot(t.x-OldMan.from.x, t.z-OldMan.from.z) || 1;
-    OldMan.walk = Math.min(1, OldMan.walk + dt*1.9/d);    // 1.9 m/s, an old man's brisk
+  if(!OldMan.obj) return;
+  const [tx, tz] = manSpot(OldMan.target);
+  if(OldMan.walk < 1 && OldMan.from){
+    const d = Math.hypot(tx-OldMan.from.x, tz-OldMan.from.z) || 1;
+    OldMan.walk = Math.min(1, OldMan.walk + dt*1.9/d);   // 1.9 m/s, an old man's brisk
     const u = OldMan.walk<0.5 ? 2*OldMan.walk*OldMan.walk
                               : 1-Math.pow(-2*OldMan.walk+2,2)/2;
-    const a = OldMan.target*2.399963;
-    const tx = t.x + Math.cos(a)*5.2, tz = t.z + Math.sin(a)*5.2;
     OldMan.x = OldMan.from.x + (tx-OldMan.from.x)*u;
     OldMan.z = OldMan.from.z + (tz-OldMan.from.z)*u;
-    OldMan.yaw = Math.atan2(t.x-OldMan.from.x, t.z-OldMan.from.z);
+    OldMan.yaw = Math.atan2(tx-OldMan.from.x, tz-OldMan.from.z);
   } else {
-    // the totem owns the centre of the field; he stands off to one side of it
-    const a = OldMan.target*2.399963;          // golden angle, so no two match
-    OldMan.x = t.x + Math.cos(a)*5.2;
-    OldMan.z = t.z + Math.sin(a)*5.2;
-    // standing at the stand, he turns to face whoever walks up
+    OldMan.x = tx; OldMan.z = tz;
+    // standing still, he turns to face whoever walks up
     const dx=camera.position.x-OldMan.x, dz=camera.position.z-OldMan.z;
     if(dx*dx+dz*dz > 4){
       const want = Math.atan2(dx,dz);
@@ -6355,8 +6376,9 @@ async function boot(){
   OldMan.obj.userData.depth = vMesh.userData.depth;
   OldMan.obj.frustumCulled = true; OldMan.obj.renderOrder = 2;
   scene.add(OldMan.obj); reflectSet.push(OldMan.obj);
-  OldMan.x = SAMARDALA[0].x; OldMan.z = SAMARDALA[0].z;
-  OldMan.target = 0; OldMan.walk = 1;
+  placeGreeting();
+  OldMan.x = GREET.x; OldMan.z = GREET.z;
+  OldMan.target = -1; OldMan.walk = 1; OldMan.from = null;
 
 
 
@@ -7083,7 +7105,7 @@ function travelToField(i){
   closeIndex();
 }
 function travelToMan(){
-  if(OldMan.target < 0) return;
+  if(OldMan.target < 0 && samHelloShown) return;
   const dx = walker.pos.x-OldMan.x, dz = walker.pos.z-OldMan.z;
   const L = Math.hypot(dx,dz) || 1;
   walker.goTo(OldMan.x + dx/L*6.0, OldMan.z + dz/L*6.0, OldMan.x, OldMan.z);
@@ -7110,8 +7132,8 @@ function refreshDock(){
   if(!dockEls) return;
   for(let i=0;i<SAMARDALA.length;i++) dockEls[i].classList.toggle('done', samFound[i]);
   const m = dockEls[dockEls.length-1];
-  m.style.display = OldMan.target<0 ? 'none' : '';
-  if(OldMan.target>=0) m.textContent = 'ЖЕЛЬО · '+FIELD_LETTER(OldMan.target);
+  m.style.display = (OldMan.target<0 && samHelloShown) ? 'none' : '';
+  m.textContent = OldMan.target>=0 ? 'ЖЕЛЬО · '+FIELD_LETTER(OldMan.target) : 'ЖЕЛЬО';
 }
 
 let indexBuilt = false, indexEls = null;
@@ -7136,10 +7158,10 @@ function refreshIndex(){
       + (samFound[i] ? ' ✓' : '');
   }
   const m = indexEls[indexEls.length-1];
-  m.style.display = OldMan.target<0 ? 'none' : 'flex';
-  if(OldMan.target>=0) m.querySelector('em').textContent =
+  m.style.display = (OldMan.target<0 && samHelloShown) ? 'none' : 'flex';
+  m.querySelector('em').textContent =
     Math.hypot(walker.pos.x-OldMan.x, walker.pos.z-OldMan.z).toFixed(0)+'m'
-    + ' · field '+FIELD_LETTER(OldMan.target);
+    + (OldMan.target>=0 ? ' · field '+FIELD_LETTER(OldMan.target) : '');
 }
 function openIndex(){
   if(!indexBuilt) buildIndex();
@@ -7206,7 +7228,7 @@ function updatePins(){
     if(samFound[i]) el.style.opacity = String(Math.min(0.34, +el.style.opacity||0.34));
   }
   const m = pinEls[pinEls.length-1];
-  if(OldMan.target>=0) place(m, OldMan.x, OldMan.z, 'дядо Жельо');
+  if(OldMan.target>=0 || !samHelloShown) place(m, OldMan.x, OldMan.z, 'дядо Жельо');
   else m.style.opacity='0';
 }
 
@@ -7259,6 +7281,19 @@ let samDoneShown = false, samHelloShown = false;
 function updateSamardala(dt){
   updateOldMan(dt);
   const px = camera.position.x, pz = camera.position.z;
+
+  /*  Meet him first, on open ground.  He introduces himself, then sets off
+      for field A — and because you are not standing in a field while he does
+      it, field A is still an arrival when you get there.                    */
+  if(!samHelloShown && OldMan.target < 0){
+    if(Math.hypot(px-OldMan.x, pz-OldMan.z) < 11){
+      samHelloShown = true;
+      say(SAM_HELLO, IS_TOUCH ? 'follow him to field A' : 'follow him to field A');
+      sendOldManTo(0);
+      return;
+    }
+  }
+
   let now = -1;
   for(let i=0;i<SAMARDALA.length;i++){
     const st = SAMARDALA[i];
@@ -7277,14 +7312,10 @@ function updateSamardala(dt){
   samFound[now] = true;
   State.samCount = samFound.filter(Boolean).length;
   const done = State.samCount === SAMARDALA.length;
-  const line = ()=> say(SAMARDALA[now].say, done ? ''
+  samHelloShown = true;                       // arriving cold counts as met
+  say(SAMARDALA[now].say, done ? ''
       : 'field '+FIELD_LETTER(now)+' · '+State.samCount+' of '+SAMARDALA.length
         +(IS_TOUCH ? '' : ' — esc to close'));
-  if(!samHelloShown){
-    samHelloShown = true;
-    pendingSay = line;
-    say(SAM_HELLO, IS_TOUCH ? 'tap × to go on' : 'esc, or ×, to go on');
-  } else line();
   if(done && !samDoneShown){
     samDoneShown = true;
     setTimeout(()=>say(SAM_DONE, 'все едно си бил в Колена'), 9000);
@@ -7404,7 +7435,7 @@ function bindInput(){
       $('#dock').classList.add('on');
       // land them at the first field rather than in an empty meadow with no
       // idea that dragging does anything
-      setTimeout(()=>travelToField(0), 900);
+      setTimeout(travelToMan, 900);
       return;                                   // no pointer lock on a phone
     }
     if(cv.requestPointerLock) cv.requestPointerLock();
