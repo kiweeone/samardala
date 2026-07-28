@@ -1034,6 +1034,8 @@ const P = {
   // the flower, read off the photograph
   samUmStem:'#7E9366', samUmBell:'#E8DFC4', samUmStripe:'#B4737E',
   samUmMouth:'#F7F2E4', samUmBud:'#C08E97', samUmBudTip:'#8A9B6C',
+  // what little light gets through a waxy leaf, and how it catches a gust
+  samTrans:'#54805C', samSheen:'#7E9E82',
   // terrain
   tLit:'#93B159', tMid:'#6A924F', tShade:'#456A54', tHollow:'#33564F',
   ridgeNear:'#8FA9A2', ridgeMid:'#9CB0B4', ridgeFar:'#AEBCC9', ridgeFurthest:'#BFC8D4',
@@ -3275,8 +3277,17 @@ ${ tier <= 1 ? `  float sh = sunShadow(vW, ndl) * cloudShadow(vW);`
   s.soft = ${ tier <= 1 ? 'mix(0.11, 0.24, clamp(vDist*0.008,0.0,1.0))' : '0.20' };
   s.jit  = ${ tier <= 1 ? '(vn2(vW.xz*3.9 + vW.y*1.7) - 0.5)*0.055' : '(vVarF-0.5)*0.05' };
   s.shadow = sh*selfShadow*mix(0.52, 1.0, vOccl);
-  s.trans  = 1.00*smoothstep(0.12,0.68,t);
-  s.transCol = ${C.gTrans};
+  /*  THE YELLOW.  Backlit translucency is ADDED to the colour, not mixed
+      into it — col += transCol * tr * thin * trans — and transCol was
+      gTrans, #E9EE7C, a bright hay yellow, at full strength over the top two
+      thirds of every blade in the meadow.  With the sun low and behind, that
+      additive term swamped anything the samardala hue path had done, which
+      is why darkening the greens four times over changed nothing.
+
+      A samardala leaf is thick, waxy and glaucous.  Very little light gets
+      through it, and what does is green, not straw.                        */
+  s.trans  = 1.00*smoothstep(0.12,0.68,t) * mix(1.0, 0.20, samF);
+  s.transCol = mix(${C.gTrans}, ${C.samTrans}, samF);
   s.rim = 0.34*(0.25 + 0.75*nearK); s.ao = vAO; s.ambient = 1.0;
   vec3 col = paint(s);
 
@@ -3286,7 +3297,9 @@ ${ tier <= 1 ? `  float sh = sunShadow(vW, ndl) * cloudShadow(vW);`
   float geom = pow(clamp(1.0 - abs(dot(N,V)), 0.0, 1.0), 1.9)*0.45
              + pow(clamp(dot(N, normalize(uSunDir + V)), 0.0, 1.0), 3.2)*0.55;
   float flash = smoothstep(0.34, 0.86, vBend) * smoothstep(0.14, 0.78, t);
-  col = mix(col, ${C.gSheen}, geom*flash*0.55*(0.30 + 0.70*sh)*(0.32 + 0.68*nearK));
+  // the same story on the gust sheen: a waxy leaf does not flare pale
+  col = mix(col, mix(${C.gSheen}, ${C.samSheen}, samF),
+            geom*flash*0.55*(0.30 + 0.70*sh)*(0.32 + 0.68*nearK)*mix(1.0, 0.35, samF));
 
   // seed head: a warm bronze plume on one blade in ten
   if(vHead > 0.5){
