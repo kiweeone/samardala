@@ -1964,6 +1964,53 @@ function clearStands(){
   }
 }
 
+/*  A CPU mirror of samardalaAt(), exact to the shader — same hash, same
+    gradient noise, same falloff.  The wind already keeps one of these
+    (windAtJS) so the audio agrees with the GPU; this one exists so the mask
+    can be read off the HUD instead of argued about.  If this says 0.00 while
+    you are standing in a field, the uniform is not reaching the shader.  If
+    it says 0.90 and the grass is still yellow, the problem is downstream in
+    the fragment colour, and we look there instead.                        */
+const _f = x => x - Math.floor(x);
+function hash22JS(x, y){
+  let p0=_f(x*0.1031), p1=_f(y*0.1030), p2=_f(x*0.0973);
+  const d = p0*(p1+33.33) + p1*(p2+33.33) + p2*(p0+33.33);
+  p0=_f(p0+d); p1=_f(p1+d); p2=_f(p2+d);
+  return [_f((p0+p1)*p2), _f((p0+p2)*p1)];
+}
+function grad2JS(x, y){
+  const h = hash22JS(x, y);
+  let gx = h[0]*2-1, gy = h[1]*2-1;
+  const L = Math.hypot(gx, gy) || 1;
+  return [gx/L, gy/L];
+}
+function pn2JS(x, y){
+  const ix=Math.floor(x), iy=Math.floor(y), fx=x-ix, fy=y-iy;
+  const ux=fx*fx*fx*(fx*(fx*6-15)+10), uy=fy*fy*fy*(fy*(fy*6-15)+10);
+  const g=(a,b,dx,dy)=>{ const q=grad2JS(a,b); return q[0]*dx + q[1]*dy; };
+  const a=g(ix,iy,fx,fy),       b=g(ix+1,iy,fx-1,fy);
+  const c=g(ix,iy+1,fx,fy-1),   d=g(ix+1,iy+1,fx-1,fy-1);
+  const m=(u,v,t)=>u+(v-u)*t;
+  return m(m(a,b,ux), m(c,d,ux), uy)*1.42;
+}
+const ss = (e0,e1,x)=>{ const t=Math.min(Math.max((x-e0)/(e1-e0),0),1); return t*t*(3-2*t); };
+function samardalaAtJS(px, pz){
+  let m = 0;
+  const arr = G.uSamardala.value;          // read the UNIFORM, not the table
+  for(let i=0;i<arr.length;i++){
+    const s = arr[i];
+    if(s.w <= 0) continue;
+    const qx=px-s.x, qz=pz-s.y, rr=Math.max(s.z,1), d2=qx*qx+qz*qz;
+    if(d2 > rr*rr*2.6) continue;
+    let d = Math.sqrt(d2)/rr;
+    const rim = ss(0.30, 1.00, d);
+    d += (pn2JS(px*0.068 + i*17.3, pz*0.068 + i*17.3)*0.30
+        + pn2JS(px*0.205 - i*11.7, pz*0.205 - i*11.7)*0.13) * rim;
+    m = Math.max(m, (1 - ss(0.74, 1.06, d)) * s.w);
+  }
+  return Math.min(Math.max(m,0),1);
+}
+
 function samardalaUniform(){
   const a = [];
   for(let i=0;i<SAM_MAX;i++){
@@ -6675,6 +6722,13 @@ async function boot(){
       + (sp.moved ? '   [moved clear]' : '')
       + (tr.d < sp.r + 30 ? '   *** STILL NEAR THE LINE ***' : ''));
   }
+  for(let i=0;i<SAMARDALA.length;i++){
+    const sp = SAMARDALA[i];
+    const m0 = samardalaAtJS(sp.x, sp.z);
+    const m5 = samardalaAtJS(sp.x+5, sp.z+5);
+    console.log(`  mask at ${FIELD_LETTER(i)} centre = ${m0.toFixed(2)}, +5m = ${m5.toFixed(2)}`
+      + (m0 < 0.5 ? '   *** MASK NOT REACHING THE SHADER ***' : ''));
+  }
   /*── village ──*/
   setStat('lighting the village', 0.68); await idle();
   const vil = buildVillage();
@@ -7467,13 +7521,14 @@ function hudTick(){
     teleNodes={ a:mk('k'), b:mk('v'), c:mk('k'), d:mk('v'), br:t.appendChild(document.createElement('br')),
                 e:mk('k'), f:mk('v'), g:mk('k'), h:mk('v') };
     teleNodes.a.textContent='wind '; teleNodes.c.textContent='  gust ';
-    teleNodes.e.textContent='fields '; teleNodes.g.textContent='  fps ';
+    teleNodes.e.textContent='fields '; teleNodes.g.textContent='  sam ';
   }
   const w = windAtJS(camera.position.x, camera.position.z, 10);
 
   teleNodes.b.textContent = w.speed.toFixed(1)+' m/s';
   teleNodes.d.textContent = (WindSys.meanSpeed*(1+w.gust*0.9)).toFixed(1);
-  teleNodes.f.textContent = State.samCount+'/'+SAMARDALA.length;
+  teleNodes.f.textContent = State.samCount+'/'+SAMARDALA.length
+    + '  sam ' + samardalaAtJS(camera.position.x, camera.position.z).toFixed(2);
   teleNodes.h.textContent = State.fps.toFixed(0);
 }
 /*  Waypoints.  Each unvisited stand and дядо Жельо himself get a pin; when
