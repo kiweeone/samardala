@@ -6,6 +6,7 @@
 <title>Samardala — самардала</title>
 <meta name="description" content="Samardala — Allium siculum subsp. bulgaricum, the herb of Stara Zagora. Walk a procedural valley and let an old man from Kolena tell you what it is.">
 <link rel="canonical" href="https://samardala.com/">
+<link rel="preload" href="/fonts/playfair.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="/og.png">
 
 <meta property="og:type" content="website">
@@ -101,6 +102,17 @@
 }
 </script>
 <style>
+  /*  Playfair Display, variable 400–900, self-hosted and subset to exactly the
+      glyphs this page uses — 38 kB covering Latin plus the Cyrillic for
+      САМАРДАЛА, дядо Жельо, Колена and Конаре.  No Google Fonts request; same
+      reasoning as vendoring three.js.  The alternative is shipped alongside:
+      swap the src to ./fonts/literata.woff2 for a sturdier, lower-contrast
+      face with the same coverage.                                          */
+  @font-face{
+    font-family:'Samardala Display';
+    src:url('./fonts/playfair.woff2') format('woff2');
+    font-weight:400 900; font-style:normal; font-display:swap;
+  }
   :root{
     --cream:#F6ECD8; --ink:#3A4356; --warm:#E8C98A; --teal:#4E7F79;
   }
@@ -121,12 +133,15 @@
     background:radial-gradient(70% 55% at 50% 55%, rgba(0,0,0,0) 40%, rgba(30,40,60,.34) 100%);}
   #veilArt{position:absolute;inset:0;width:100%;height:100%;display:block}
   .card{position:relative;z-index:2;text-align:center;padding:0 28px;max-width:660px}
-  .kanji{font-size:13px;letter-spacing:.72em;opacity:.72;margin-bottom:20px;color:#2E3D52;
-    text-indent:.72em}
-  h1{font-size:clamp(34px,7.2vw,68px);font-weight:400;letter-spacing:.035em;line-height:1.02;
-    color:#2C3A4E;text-shadow:0 1px 0 rgba(255,255,255,.35)}
-  h1 em{font-style:italic;display:block;font-size:.42em;letter-spacing:.24em;margin-top:14px;
-    opacity:.66;font-weight:400}
+  .kanji{font-family:'Samardala Display',Georgia,serif;font-weight:600;
+    font-size:12.5px;letter-spacing:.66em;opacity:.62;margin-bottom:22px;color:#2E3D52;
+    text-indent:.66em}
+  h1{font-family:'Samardala Display',Georgia,serif;
+    font-size:clamp(40px,8.4vw,88px);font-weight:800;letter-spacing:-.022em;line-height:.98;
+    color:#22303F;text-shadow:0 1px 0 rgba(255,255,255,.35)}
+  h1 em{font-family:'Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;
+    font-style:italic;display:block;font-size:.30em;letter-spacing:.18em;margin-top:18px;
+    opacity:.62;font-weight:400}
   .rule{width:78px;height:1px;background:#2C3A4E;opacity:.4;margin:26px auto}
   .blurb{font-size:14.5px;line-height:1.85;opacity:.78;color:#26364B;max-width:470px;margin:0 auto}
   .blurb b{font-weight:600}
@@ -227,8 +242,10 @@
     font-family:'Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif}
   #about[hidden]{display:none}
   #about .wrap{max-width:660px;margin:0 auto;padding:76px 26px 0}
-  #about .eyebrow{font-size:11px;letter-spacing:.42em;opacity:.5;margin-bottom:14px}
-  #about h1{font-size:clamp(40px,7vw,62px);font-weight:400;letter-spacing:-.01em;
+  #about .eyebrow{font-family:'Samardala Display',Georgia,serif;font-weight:600;
+    font-size:11px;letter-spacing:.42em;opacity:.5;margin-bottom:14px}
+  #about h1{font-family:'Samardala Display',Georgia,serif;
+    font-size:clamp(46px,8vw,78px);font-weight:800;letter-spacing:-.024em;
     line-height:1.05;margin-bottom:20px}
   #about .lede{font-size:18px;line-height:1.7;opacity:.8;margin-bottom:14px;
     padding-bottom:26px;border-bottom:1px solid rgba(42,51,65,.16)}
@@ -6309,7 +6326,11 @@ const IS_TOUCH = matchMedia('(pointer: coarse)').matches || 'ontouchstart' in wi
 if(IS_TOUCH) document.body.classList.add('touch');
 
 const State = {
-  q: QS.has('q') ? clamp(+QS.get('q'),0,3) : (IS_TOUCH ? 0 : 2),
+  /*  Low for everyone.  autoQuality() only ever steps DOWN, so starting at
+      High meant seconds of slideshow on any machine that could not hold it —
+      and those are exactly the seconds in which someone decides to stay or
+      leave.  Raise it in the H panel, or with ?q=2 in the URL.             */
+  q: QS.has('q') ? clamp(+QS.get('q'),0,3) : 0,
   density: QS.has('d') ? +QS.get('d') : (IS_TOUCH ? 0.55 : 1.0),
   scale:   QS.has('s') ? +QS.get('s') : (IS_TOUCH ? 0.72 : 1.0),
   exposure:1.0, bloom:1.0, paint:1.0,

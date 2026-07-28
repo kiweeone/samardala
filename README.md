@@ -108,4 +108,4 @@ if one is still near the line.
       Sarnena Sredna Gora furniture
 - [ ] Repalette (§0b) for Bulgarian spring light — the sun is still late August
 - [ ] An HTML content layer underneath the canvas, for search engines
-- [ ] The shop 
+- [ ] The shop
