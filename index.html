@@ -7288,8 +7288,10 @@ function updateSamardala(dt){
   if(!samHelloShown && OldMan.target < 0){
     if(Math.hypot(px-OldMan.x, pz-OldMan.z) < 11){
       samHelloShown = true;
-      say(SAM_HELLO, IS_TOUCH ? 'follow him to field A' : 'follow him to field A');
-      sendOldManTo(0);
+      say(SAM_HELLO, 'follow him to field A');
+      // he sets off only once you have had a moment with the greeting, so he
+      // is not already walking away while you are still reading it
+      setTimeout(()=>{ if(OldMan.target < 0) sendOldManTo(0); }, 4000);
       return;
     }
   }
@@ -7299,12 +7301,16 @@ function updateSamardala(dt){
     const st = SAMARDALA[i];
     if(Math.hypot(px-st.x, pz-st.z) < st.r*0.80){ now = i; break; }
   }
-  if(now === samIn){ if(now < 0) hush(); return; }
+  /*  THE BUG.  This line used to read `if(now < 0) hush();` — so on every
+      single frame that you were not standing in a field, the panel was closed
+      again.  His greeting appeared and was wiped 16 ms later, which looked
+      like it had no text at all.  Nothing changed means touch nothing.      */
+  if(now === samIn) return;
   samIn = now;
   if(now < 0){
     // he waits a moment, then walks on to the next field you have not heard
     clearTimeout(talkT);
-    talkT = setTimeout(()=>{ hush(); sendOldManTo(nextStand()); }, 900);
+    talkT = setTimeout(()=>{ hush(); sendOldManTo(nextStand()); }, 4500);
     pendingSay = null;
     return;
   }
