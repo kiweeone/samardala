@@ -1606,7 +1606,7 @@ const PATH_PTS = (()=>{ const a=[]; for(let i=0;i<=420;i++){ const p=catmull(PAT
     Each one carries a single fragment of what the herb is.  Walking all six
     is how you learn it; nobody reads a paragraph, everybody finishes a set. */
 const SAMARDALA = [
-  { x: -92, z:  84, r:22,
+  { x:-100, z:  46, r:22,
     say:'You found it. This is samardala — not a grass, look. The leaf is '
       + 'three-sided, and it turns as it grows. Feel how it stays put when the '
       + 'wind comes through. The whole meadow lies down and this one stands '
@@ -1700,6 +1700,10 @@ function clearStands(){
     const brD = Math.abs(al) < BR_L + 34 ? Math.abs(sd) : Math.hypot(dx, dz);
     return Math.min(rf.d - 46, tr.d - 44, brD - 62);
   };
+  /*  River/track clearance and field-to-field separation fight each other:
+      pushing a field off the railway can shove it into its neighbour, and
+      prising two apart can shove one onto the railway.  Interleave them.   */
+  for(let round=0; round<6; round++){
   for(const st of SAMARDALA){
     const need = st.r;
     for(let i=0;i<200;i++){
@@ -1732,6 +1736,7 @@ function clearStands(){
         a.moved=b.moved=true; worst=Math.max(worst, push);
       }
     if(worst < 0.05) break;
+  }
   }
 }
 
@@ -4498,9 +4503,13 @@ function buildTotems(){
     you meet him first, on open ground, and then walk to the field together.  */
 const GREET = { x:0, z:0 };
 function placeGreeting(){
-  const h = CFG.spawn.heading*Math.PI/180;
-  GREET.x = CFG.spawn.x - Math.sin(h)*15;
-  GREET.z = CFG.spawn.z - Math.cos(h)*15;
+  /*  Derived from the walker's own basis, not guessed.  Walker sets
+      yaw = -heading*DEG, and its forward is -Z rotated by yaw.  Getting this
+      sign wrong put him fifteen metres BEHIND the spawn point, where nobody
+      would ever turn round to look for him.                                */
+  const yaw = -CFG.spawn.heading*Math.PI/180;
+  GREET.x = CFG.spawn.x + (-Math.sin(yaw))*13;
+  GREET.z = CFG.spawn.z + (-Math.cos(yaw))*13;
   // and never inside a field, however clearStands() ended up moving them
   for(let i=0;i<80;i++){
     let hit = null;
@@ -7286,7 +7295,7 @@ function updateSamardala(dt){
       for field A — and because you are not standing in a field while he does
       it, field A is still an arrival when you get there.                    */
   if(!samHelloShown && OldMan.target < 0){
-    if(Math.hypot(px-OldMan.x, pz-OldMan.z) < 11){
+    if(Math.hypot(px-OldMan.x, pz-OldMan.z) < 13){
       samHelloShown = true;
       say(SAM_HELLO, 'follow him to field A');
       // he sets off only once you have had a moment with the greeting, so he
