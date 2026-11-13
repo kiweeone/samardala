@@ -180,7 +180,7 @@
     padding:16px 20px;display:flex;justify-content:space-between;align-items:flex-end;
     font-size:13px;letter-spacing:.14em;text-transform:uppercase;
     text-shadow:0 1px 3px rgba(20,26,38,.7);opacity:0;transition:opacity 1.2s}
-  #hud.on{opacity:.8}
+  #hud.on{opacity:1}
   #sig{position:fixed;right:20px;top:16px;z-index:22;font-size:12px;letter-spacing:.24em;
     text-transform:uppercase;color:#F6ECD8;text-decoration:none;opacity:0;
     pointer-events:auto;transition:opacity .8s,color .25s;
@@ -334,6 +334,18 @@
     color:#F6E2B3;font-size:14px;letter-spacing:.14em;padding:0 19px;
     animation:dockGlow 1.8s ease-in-out 1.4s 3}
   #dockRow button:active{background:rgba(246,236,216,.34)}
+  #dockRow button b{font-weight:700;margin-right:7px;opacity:.75}
+  #dockRow button.done span::after{content:" ✓"}
+  /* desktop: label on its own line, stops on one row, "?" tucked in the corner */
+  #dockWrap{position:relative;flex-direction:column;gap:6px;border-radius:26px;padding:9px 14px 10px}
+  #dockRow{flex-wrap:wrap;justify-content:center}
+  #dockRow button{height:42px;font-size:15px;padding:0 13px}
+  #keysBtn{position:absolute;right:10px;top:6px;width:28px;height:28px;border-radius:14px;cursor:pointer;font-size:14px!important;
+    border:1px solid rgba(246,236,216,.3);background:none;color:#F6ECD8;font-family:inherit;font-size:17px;font-weight:700}
+  #keysBtn:hover,#hud.keys ~ #dock #keysBtn{background:rgba(246,236,216,.2)}
+  #keysBtn{flex:none}
+  body.touch #keysBtn{display:none}
+  #dockWrap{max-width:min(1180px,100%)}
   @keyframes dockGlow{50%{box-shadow:0 0 0 7px rgba(232,201,138,.25)}}
   /* while the mouse is captured for looking around, the dock can't be clicked — say so */
   body.locked #dockRow{opacity:.55;pointer-events:none}
@@ -346,13 +358,21 @@
     #dockLabel{font-size:11.5px}
     #dockRow{flex-wrap:wrap;justify-content:center;overflow:visible}
     #dockRow button{min-width:42px;height:42px;padding:0 12px}
+    #dockRow button span{display:none}
+    #dockRow button b{margin:0;opacity:1}
+    #dockRow button.done span::after{content:none}
+    #dockRow button.done b::after{content:"✓";font-size:11px;margin-left:2px}
   }
   body.touch #hud{padding-bottom:150px}
   body.touch #talk{bottom:158px}
   /* desktop: key hints sit just above the dock, on a readable backing */
-  body:not(.touch) #hud{padding-bottom:86px}
-  body:not(.touch) #talk{bottom:92px}
-  #keys{background:rgba(14,19,28,.55);padding:8px 12px;border-radius:10px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+  body:not(.touch) #hud{padding-bottom:108px}
+  body:not(.touch) #talk{bottom:112px}
+  #hud #keys{background:rgba(14,19,28,.8);padding:10px 14px;border-radius:12px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    opacity:0;transform:translateY(8px);transition:opacity .4s,transform .4s;margin:0 auto;text-align:center;max-width:min(980px,100%)}
+  #hud.keys #keys{opacity:1;transform:none}
+  #hud{justify-content:center!important}
+  #tele{display:none}
 
   /* touch layout: the desktop key hints and telemetry are meaningless here */
   body.touch #keys, body.touch #index{display:none}
@@ -421,7 +441,7 @@
   <div id="keys" class="k">
     <span><b>WASD</b> walk</span><span><b>Shift</b> run</span><span><b>Mouse</b> look</span>
     <span><b>F</b> fly</span><span><b>Space/Ctrl</b> up&#47;down</span>
-    <span><b>C</b> cinematic</span><span><b>M</b> fields</span><span><b>R</b> read</span><span><b>H</b> settings</span><span><b>Esc</b> release</span>
+    <span><b>C</b> cinematic</span><span><b>M</b> list of stops</span><span><b>R</b> read</span><span><b>H</b> settings</span><span><b>?</b> hide this</span><span><b>Esc</b> release</span>
   </div>
   <div id="tele"></div>
 </div>
@@ -948,7 +968,7 @@
 
 <div id="pins"></div>
 
-<div id="dock"><div id="dockWrap"><span id="dockLabel">Go to field</span><div id="dockRow"></div></div></div>
+<div id="dock"><div id="dockWrap"><span id="dockLabel">Stops on the walk</span><div id="dockRow"></div><button id="keysBtn" title="Keyboard controls" aria-label="Keyboard controls">?</button></div></div>
 
 <div id="index">
   <h4>The valley</h4>
@@ -1925,51 +1945,51 @@ const PATH_PTS = (()=>{ const a=[]; for(let i=0;i<=420;i++){ const p=catmull(PAT
     Each one carries a single fragment of what the herb is.  Walking all six
     is how you learn it; nobody reads a paragraph, everybody finishes a set. */
 const SAMARDALA = [
-  { x:-100, z:  46, r:22,
+  { x:-100, z:  46, r:22, name:'The leaf',
     say:'You found it. This is samardala — not a grass, look. The leaf is '
       + 'three-sided, and it turns as it grows. Feel how it stays put when the '
       + 'wind comes through. The whole meadow lies down and this one stands '
       + 'there like it heard nothing.' },
 
-  { x: -58, z:  26, r:19,
+  { x: -58, z:  26, r:19, name:'The name',
     say:'The name? Look how it comes up out of the ground — stiff, straight up. '
       + 'Like the samar, the packsaddle you put on a horse. That is all it is. '
       + 'Samar-dala. A herb named after a piece of harness, by people who had '
       + 'more horses about them than words to spare.' },
 
-  { x:-116, z:   8, r:24,
+  { x:-116, z:   8, r:24, name:'The legend',
     say:'My grandmother told it this way. When God had finished making the '
       + 'grasses, he went to pull this one up to look at it closer, and he took '
       + 'it by the leaves. They turned in his hand. That is why they are twisted. '
       + 'Believe it or do not believe it — but look at the leaf.' },
 
-  { x:-236, z: 104, r:20,
+  { x:-236, z: 104, r:20, name:'Harvest',
     say:'March, when the leaves first come up, before the seed. Only the leaves. '
       + 'You cut — you never pull. The bulb stays in the ground. My father would '
       + 'hit me for taking a bulb, and he was right. Take the bulb and there is '
       + 'nothing here next spring, and nothing for your children. That is the '
       + 'whole law of it.' },
 
-  { x: -40, z: -30, r:22,
+  { x: -40, z: -30, r:22, name:'Salt',
     say:'Then you chop it and you pound it with salt. Equal — as much salt as '
       + 'leaf. And you do it in the yard, not in the house. I am telling you now '
       + 'so you do not learn it the way I learned it. It will take your eyes worse '
       + 'than any onion. Every woman in Kolena has cried over this.' },
 
-  { x:-268, z:  46, r:24,
+  { x:-268, z:  46, r:24, name:'Drying',
     say:'Thirty days in the shade. Forty, if the spring is wet. An airy room, and '
       + 'never above thirty degrees — warmer and it goes brown, and brown '
       + 'samardala is a wasted year. Then into the jar. The green fades, it goes '
       + 'pale on you. The taste does not move.' },
 
   // ── the two above the village ──────────────────────────────────────────
-  { x:-322, z: 132, r:24,
+  { x:-322, z: 132, r:24, name:'Coloured salt',
     say:'Now you are near the houses. Down there they mix it into the sharena '
       + 'sol — the coloured salt, with chubritsa and red pepper and fenugreek. '
       + 'Every region argues about that recipe. Around Stara Zagora we put the '
       + 'samardala in raw, and we are right, and they are wrong.' },
 
-  { x:-556, z: 244, r:26,
+  { x:-556, z: 244, r:26, name:'Konare',
     say:'Over in Konare, the next village, they hold a festival for it. A service '
       + 'in the church yard, then everyone walks down with baskets, and last '
       + 'spring they baked a loaf ten metres long and covered it in this. And '
@@ -4980,6 +5000,8 @@ void main(){
     the shaft — one for field A, two for B — so you can tell in the world
     which field you are standing in without reading anything.                */
 const FIELD_LETTER = i => String.fromCharCode(65 + i);
+// what people see: a numbered stop on the walk with its subject, e.g. "3 · The legend"
+const FIELD_LABEL = i => (i + 1) + ' · ' + SAMARDALA[i].name;
 
 function buildTotems(){
   const M = PB();
@@ -7685,12 +7707,13 @@ function buildDock(){
   const row = $('#dockRow'); row.textContent='';
   dockEls = SAMARDALA.map((_,i)=>{
     const b=document.createElement('button');
-    b.textContent = FIELD_LETTER(i);
+    b.innerHTML = '<b>'+(i+1)+'</b><span>'+SAMARDALA[i].name+'</span>';
+    b.title = 'Walk to stop '+FIELD_LABEL(i);
     b.addEventListener('click', ()=>travelToField(i));
     row.appendChild(b); return b;
   });
   const m=document.createElement('button'); m.className='man';
-  m.textContent='ЖЕЛЬО';
+  m.textContent='дядо Жельо';
   m.addEventListener('click', travelToMan);
   row.appendChild(m); dockEls.push(m);
 }
@@ -7699,7 +7722,8 @@ function refreshDock(){
   for(let i=0;i<SAMARDALA.length;i++) dockEls[i].classList.toggle('done', samFound[i]);
   const m = dockEls[dockEls.length-1];
   m.style.display = (OldMan.target<0 && samHelloShown) ? 'none' : '';
-  m.textContent = OldMan.target>=0 ? 'ЖЕЛЬО · '+FIELD_LETTER(OldMan.target) : 'ЖЕЛЬО';
+  m.textContent = OldMan.target>=0 ? 'дядо Жельо → '+(OldMan.target+1) : 'дядо Жельо';
+  const lab = $('#dockLabel'); if(lab) lab.textContent = 'Stops on the walk · '+State.samCount+'/'+SAMARDALA.length;
 }
 
 let indexBuilt = false, indexEls = null;
@@ -7710,7 +7734,7 @@ function buildIndex(){
     b.innerHTML='<span>'+label+'</span><em></em>';
     b.addEventListener('click', onclick); host.appendChild(b); return b;
   };
-  indexEls = SAMARDALA.map((st,i)=> mk('', 'Field '+FIELD_LETTER(i), ()=>travelToField(i)));
+  indexEls = SAMARDALA.map((st,i)=> mk('', FIELD_LABEL(i), ()=>travelToField(i)));
   indexEls.push(mk('man', 'дядо Жельо', travelToMan));
   indexBuilt = true;
 }
@@ -7727,7 +7751,7 @@ function refreshIndex(){
   m.style.display = (OldMan.target<0 && samHelloShown) ? 'none' : 'flex';
   m.querySelector('em').textContent =
     Math.hypot(walker.pos.x-OldMan.x, walker.pos.z-OldMan.z).toFixed(0)+'m'
-    + (OldMan.target>=0 ? ' · field '+FIELD_LETTER(OldMan.target) : '');
+    + (OldMan.target>=0 ? ' · stop '+(OldMan.target+1) : '');
 }
 function openIndex(){
   if(!indexBuilt) buildIndex();
@@ -7795,7 +7819,7 @@ function updatePins(){
     const el=pinEls[i];
     if(OldMan.target===i){ el.style.opacity='0'; el.style.pointerEvents='none'; continue; }
     el.style.pointerEvents='';
-    place(el, SAMARDALA[i].x, SAMARDALA[i].z, 'field '+FIELD_LETTER(i));
+    place(el, SAMARDALA[i].x, SAMARDALA[i].z, FIELD_LABEL(i));
     // a field already walked keeps a faint pin so it stays a shortcut
     if(samFound[i]) el.style.opacity = String(Math.min(0.34, +el.style.opacity||0.34));
   }
@@ -7892,7 +7916,7 @@ function updateSamardala(dt){
   const done = State.samCount === SAMARDALA.length;
   samHelloShown = true;                       // arriving cold counts as met
   say(SAMARDALA[now].say, done ? ''
-      : 'field '+FIELD_LETTER(now)+' · '+State.samCount+' of '+SAMARDALA.length
+      : FIELD_LABEL(now)+' · '+State.samCount+' of '+SAMARDALA.length
         +(IS_TOUCH ? '' : ' — esc to close'));
   if(done && !samDoneShown){
     samDoneShown = true;
@@ -7914,6 +7938,7 @@ function bindInput(){
       toast(on ? 'settings — click the view to look again' : '');
     }
     if(e.code==='KeyM'){ toggleIndex(); }
+    if(e.code==='KeyK' || e.key==='?'){ $('#hud').classList.toggle('keys'); }
     if(e.code==='KeyR'){ $('#about').hidden ? openAbout() : closeAbout(); }
     if(e.code==='KeyC'){ walker.cinematic=!walker.cinematic; walker.cineT=0;
       toast(walker.cinematic?'cinematic':'free walk'); }
@@ -8032,6 +8057,8 @@ function bindInput(){
     setTimeout(()=>{ $('#veil').style.display='none'; }, 1700);
     buildDock(); refreshDock();
     $('#dock').classList.add('on');
+    $('#keysBtn').addEventListener('click', ()=> $('#hud').classList.toggle('keys'));
+    if(!IS_TOUCH){ $('#hud').classList.add('keys'); setTimeout(()=>$('#hud').classList.remove('keys'), 9000); }
     if(IS_TOUCH){
       // land them at the first field rather than in an empty meadow with no
       // idea that dragging does anything
