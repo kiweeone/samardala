@@ -372,15 +372,15 @@
   /* Settings + Controls sit together on their own, away from the stops bar */
   #corner{position:fixed;right:20px;bottom:24px;z-index:31;display:none;gap:8px}
   #corner.on{display:flex}
-  .cbtn{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 16px 0 6px;border-radius:22px;cursor:pointer;
+  .cbtn{display:inline-grid;place-items:center;width:44px;height:44px;padding:0;border-radius:22px;cursor:pointer;
     font-family:inherit;font-size:15px;font-weight:600;color:#FBF4E4;background:var(--glass);
     border:1px solid var(--glass-line);text-shadow:var(--glass-shadow);
     backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);box-shadow:0 6px 18px rgba(0,0,0,.16)}
-  .cbtn span{display:grid;place-items:center;width:32px;height:32px;border-radius:16px;background:#E8C98A;color:#1C2431;font-weight:800;text-shadow:none}
+  .cbtn span{display:grid;place-items:center;width:30px;height:30px;border-radius:15px;background:#E8C98A;color:#1C2431;font-weight:800;font-size:16px;text-shadow:none}
   .cbtn:hover{background:rgba(28,36,49,.6)}
   @media (max-width:1500px){ body:not(.touch) #corner{bottom:112px} }
-  body.touch #corner{top:calc(48px + env(safe-area-inset-top));bottom:auto;right:10px;flex-direction:column;align-items:flex-end}
-  body.touch .cbtn{height:40px;font-size:14px}
+  body.touch #corner{top:calc(48px + env(safe-area-inset-top));bottom:auto;right:10px}
+  body.touch .cbtn{width:40px;height:40px}
   /* phones: settings open as a sheet at the bottom, clear of the corner buttons */
   body.touch #panel{width:min(340px,92vw);max-height:62vh;overflow-y:auto;top:auto;bottom:0;border-radius:14px 0 0 0;padding-bottom:calc(20px + env(safe-area-inset-bottom))}
   @keyframes dockGlow{50%{box-shadow:0 0 0 7px rgba(232,201,138,.25)}}
@@ -931,8 +931,8 @@
       <li><kbd>Drag</kbd><span>look around</span></li>
       <li><kbd>Tap ground</kbd><span>walk there</span></li>
       <li><kbd>Stops bar</kbd><span>tap a stop to go there</span></li>
-      <li><kbd>Settings</kbd><span>quality and sound</span></li>
-      <li><kbd>Controls</kbd><span>this list, any time</span></li>
+      <li><kbd>Gear icon</kbd><span>quality and sound</span></li>
+      <li><kbd>? icon</kbd><span>this list, any time</span></li>
     </ul>
     <button id="start">Start walking</button>
    </div>
@@ -1060,7 +1060,7 @@
 <div id="pins"></div>
 
 <div id="dock"><div id="dockWrap"><span id="dockLabel">Stops on the walk</span><div id="dockRow"></div></div></div>
-<div id="corner"><button id="setBtn" class="cbtn" aria-label="Settings"><span><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span> Settings</button><button id="helpBtn" class="cbtn" aria-label="Show controls"><span>?</span> Controls</button></div>
+<div id="corner"><button id="setBtn" class="cbtn" aria-label="Settings" title="Settings"><span><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span></button><button id="helpBtn" class="cbtn" aria-label="Controls" title="Controls"><span>?</span></button></div>
 
 <div id="index">
   <h4>The valley</h4>
