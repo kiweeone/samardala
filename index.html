@@ -132,30 +132,33 @@
   #veil:before{content:"";position:absolute;inset:0;pointer-events:none;
     background:radial-gradient(70% 55% at 50% 55%, rgba(0,0,0,0) 40%, rgba(30,40,60,.34) 100%);}
   #veilArt{position:absolute;inset:0;width:100%;height:100%;display:block}
-  .card{position:relative;z-index:2;text-align:center;padding:0 28px;max-width:660px}
+  #veil{overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .card{position:relative;z-index:2;text-align:center;padding:32px 28px;max-width:720px;margin:auto}
+  .card:before{content:"";position:absolute;inset:-70px -90px;z-index:-1;pointer-events:none;
+    background:radial-gradient(closest-side,rgba(250,244,228,.62),rgba(250,244,228,0))}
   .kanji{font-family:'Samardala Display',Georgia,serif;font-weight:600;
-    font-size:12.5px;letter-spacing:.66em;opacity:.62;margin-bottom:22px;color:#2E3D52;
-    text-indent:.66em}
+    font-size:15px;letter-spacing:.5em;opacity:.8;margin-bottom:22px;color:#2E3D52;
+    text-indent:.5em}
   h1{font-family:'Samardala Display',Georgia,serif;
     font-size:clamp(40px,8.4vw,88px);font-weight:800;letter-spacing:-.022em;line-height:.98;
     color:#22303F;text-shadow:0 1px 0 rgba(255,255,255,.35)}
   h1 em{font-family:'Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;
-    font-style:italic;display:block;font-size:.30em;letter-spacing:.18em;margin-top:18px;
-    opacity:.62;font-weight:400}
+    font-style:italic;display:block;font-size:max(17px,.3em);letter-spacing:.12em;margin-top:18px;
+    opacity:.85;font-weight:400}
   .rule{width:78px;height:1px;background:#2C3A4E;opacity:.4;margin:26px auto}
-  .blurb{font-size:14.5px;line-height:1.85;opacity:.78;color:#26364B;max-width:470px;margin:0 auto}
+  .blurb{font-size:18px;line-height:1.7;opacity:.92;color:#26364B;max-width:560px;margin:0 auto}
   .blurb b{font-weight:600}
   #bar{width:230px;height:2px;background:rgba(44,58,78,.2);margin:34px auto 12px;overflow:hidden;border-radius:2px}
   #barIn{height:100%;width:0%;background:linear-gradient(90deg,#4E7F79,#2C3A4E);transition:width .3s ease}
-  #stat{font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;opacity:.6;color:#26364B;
+  #stat{font-size:13px;letter-spacing:.22em;text-transform:uppercase;opacity:.8;color:#26364B;
     min-height:16px}
   #enter{margin-top:30px;display:none;cursor:pointer;border:1px solid rgba(44,58,78,.45);
     background:rgba(255,252,244,.34);color:#22303F;padding:14px 40px;border-radius:999px;
-    font-family:inherit;font-size:13.5px;letter-spacing:.28em;text-transform:uppercase;
+    font-family:inherit;font-size:15px;letter-spacing:.26em;text-transform:uppercase;
     transition:.35s;backdrop-filter:blur(3px)}
   #enter:hover{background:rgba(255,252,244,.72);letter-spacing:.34em}
   #enter.on{display:inline-block;animation:rise .9s cubic-bezier(.2,.8,.2,1) both}
-  .sig{margin-top:26px;font-size:11px;letter-spacing:.13em;color:#26364B;opacity:.5;
+  .sig{margin-top:26px;font-size:13px;letter-spacing:.1em;color:#26364B;opacity:.75;line-height:1.6;
     text-transform:uppercase}
   .sig a{color:inherit;text-decoration:none;border-bottom:1px solid rgba(38,54,75,.4);
     padding-bottom:1px;transition:.25s}
@@ -165,14 +168,14 @@
   /* ---------- hud ---------- */
   #hud{position:fixed;left:0;right:0;bottom:0;z-index:20;pointer-events:none;
     padding:16px 20px;display:flex;justify-content:space-between;align-items:flex-end;
-    font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    font-size:13px;letter-spacing:.14em;text-transform:uppercase;
     text-shadow:0 1px 3px rgba(20,26,38,.7);opacity:0;transition:opacity 1.2s}
-  #hud.on{opacity:.62}
-  #sig{position:fixed;right:20px;top:16px;z-index:22;font-size:10px;letter-spacing:.24em;
+  #hud.on{opacity:.8}
+  #sig{position:fixed;right:20px;top:16px;z-index:22;font-size:12px;letter-spacing:.24em;
     text-transform:uppercase;color:#F6ECD8;text-decoration:none;opacity:0;
     pointer-events:auto;transition:opacity .8s,color .25s;
     text-shadow:0 1px 4px rgba(18,24,34,.85);-webkit-tap-highlight-color:transparent}
-  #sig.on{opacity:.42}
+  #sig.on{opacity:.65}
   #sig:hover{opacity:.95;color:#E8C98A}
   body.locked #sig{pointer-events:none}
   body.touch #sig{top:calc(12px + env(safe-area-inset-top))}
@@ -182,39 +185,39 @@
   #tele{text-align:right;font-variant-numeric:tabular-nums;line-height:1.75}
   #tele .v{opacity:.95}
 
-  #panel{position:fixed;top:0;right:0;z-index:25;width:266px;padding:18px 20px 20px;
+  #panel{position:fixed;top:0;right:0;z-index:25;width:300px;padding:18px 20px 20px;
     background:rgba(20,27,38,.72);backdrop-filter:blur(14px);
     border-left:1px solid rgba(246,236,216,.12);border-bottom:1px solid rgba(246,236,216,.12);
-    font-size:11px;letter-spacing:.1em;transform:translateX(102%);transition:.5s cubic-bezier(.4,0,.2,1);
+    font-size:12px;letter-spacing:.1em;transform:translateX(102%);transition:.5s cubic-bezier(.4,0,.2,1);
     border-bottom-left-radius:14px}
   #panel.on{transform:none}
-  #panel h3{font-size:10px;letter-spacing:.3em;text-transform:uppercase;opacity:.5;
+  #panel h3{font-size:11px;letter-spacing:.3em;text-transform:uppercase;opacity:.5;
     margin:0 0 12px;font-weight:400}
   #panel h3+h3{margin-top:18px}
   .row{display:flex;align-items:center;justify-content:space-between;margin:7px 0;gap:10px}
-  .row label{opacity:.8;text-transform:uppercase;font-size:10px;letter-spacing:.14em}
+  .row label{opacity:.8;text-transform:uppercase;font-size:11.5px;letter-spacing:.12em}
   .row input[type=range]{width:104px;accent-color:#8FBEA8;background:transparent}
   .row select{background:rgba(246,236,216,.1);color:var(--cream);border:1px solid rgba(246,236,216,.2);
-    border-radius:5px;padding:3px 6px;font-family:inherit;font-size:10.5px;letter-spacing:.1em}
+    border-radius:5px;padding:3px 6px;font-family:inherit;font-size:12px;letter-spacing:.1em}
   .row .val{opacity:.55;font-variant-numeric:tabular-nums;min-width:34px;text-align:right}
   .chk{width:13px;height:13px;accent-color:#8FBEA8}
   .seg{display:flex;gap:3px}
-  .seg button{font-family:inherit;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+  .seg button{font-family:inherit;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
     padding:4px 7px;border-radius:5px;cursor:pointer;color:var(--cream);
     background:rgba(246,236,216,.08);border:1px solid rgba(246,236,216,.18);transition:.18s}
   .seg button:hover{background:rgba(246,236,216,.2)}
   .seg button.on{background:rgba(143,190,168,.34);border-color:rgba(143,190,168,.6)}
-  #panel .note{opacity:.4;font-size:9.5px;line-height:1.7;margin-top:14px;letter-spacing:.06em;
+  #panel .note{opacity:.55;font-size:11px;line-height:1.7;margin-top:14px;letter-spacing:.06em;
     text-transform:none;font-style:italic}
 
   #flash{position:fixed;inset:0;z-index:30;pointer-events:none;background:#F6ECD8;opacity:0;
     transition:opacity .5s}
   #toast{position:fixed;left:50%;top:34px;transform:translateX(-50%);z-index:26;
-    background:rgba(20,27,38,.8);padding:9px 20px;border-radius:999px;font-size:11px;
+    background:rgba(20,27,38,.8);padding:9px 20px;border-radius:999px;font-size:13px;
     letter-spacing:.2em;text-transform:uppercase;opacity:0;transition:.4s;backdrop-filter:blur(10px);
     border:1px solid rgba(246,236,216,.14);pointer-events:none}
   #toast.on{opacity:.9}
-  .blurb.sub{margin-top:14px;font-size:13px;opacity:.66}
+  .blurb.sub{margin-top:16px;font-size:16px;opacity:.82}
   .blurb .t{display:none} body.touch .blurb .t{display:inline}
   body.touch .blurb .d{display:none}
 
@@ -222,7 +225,7 @@
   #pins{position:fixed;inset:0;z-index:18;pointer-events:none;overflow:hidden}
   .pin{position:absolute;transform:translate(-50%,-50%);transition:opacity .5s;
     pointer-events:auto;cursor:pointer;padding:6px 10px;border-radius:10px;
-    font-size:10px;letter-spacing:.18em;text-transform:uppercase;text-align:center;
+    font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;text-align:center;
     color:#F6ECD8;text-shadow:0 1px 6px rgba(12,18,28,.9);white-space:nowrap}
   .pin i{display:block;width:9px;height:9px;margin:0 auto 7px;border-radius:50%;
     border:1px solid rgba(246,236,216,.85);background:rgba(246,236,216,.18);
@@ -243,15 +246,15 @@
   #about[hidden]{display:none}
   #about .wrap{max-width:660px;margin:0 auto;padding:76px 26px 0}
   #about .eyebrow{font-family:'Samardala Display',Georgia,serif;font-weight:600;
-    font-size:11px;letter-spacing:.42em;opacity:.5;margin-bottom:14px}
+    font-size:12.5px;letter-spacing:.42em;opacity:.5;margin-bottom:14px}
   #about h1{font-family:'Samardala Display',Georgia,serif;
     font-size:clamp(46px,8vw,78px);font-weight:800;letter-spacing:-.024em;
     line-height:1.05;margin-bottom:20px}
   #about .lede{font-size:18px;line-height:1.7;opacity:.8;margin-bottom:14px;
     padding-bottom:26px;border-bottom:1px solid rgba(42,51,65,.16)}
-  #about h2{font-size:13px;letter-spacing:.24em;text-transform:uppercase;
+  #about h2{font-size:14px;letter-spacing:.24em;text-transform:uppercase;
     font-weight:400;opacity:.55;margin:40px 0 14px}
-  #about p{font-size:16.5px;line-height:1.78;margin-bottom:16px}
+  #about p{font-size:18px;line-height:1.78;margin-bottom:16px}
   #about em{font-style:italic}
   #about a{color:inherit}
   /* ---------- the plates ---------- */
@@ -260,7 +263,7 @@
     background:#F2EAD6;box-shadow:0 2px 26px rgba(42,51,65,.16);
     transition:box-shadow .3s,transform .3s}
   #about .plate:hover img{box-shadow:0 6px 38px rgba(42,51,65,.26);transform:translateY(-2px)}
-  #about figcaption{margin-top:12px;font-size:13px;line-height:1.6;opacity:.55;
+  #about figcaption{margin-top:12px;font-size:14px;line-height:1.6;opacity:.55;
     font-style:italic}
 
   /* full-bleed on wide screens, so a plate is not a postage stamp */
@@ -277,10 +280,10 @@
   #lightbox img{max-width:96vw;max-height:90vh;border-radius:4px;
     box-shadow:0 10px 60px rgba(0,0,0,.5);background:#F2EAD6}
   #lightbox .hint{position:fixed;bottom:20px;left:0;right:0;text-align:center;
-    font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:#F6ECD8;
+    font-size:12.5px;letter-spacing:.24em;text-transform:uppercase;color:#F6ECD8;
     opacity:.42}
 
-  #about .sig-out{margin-top:52px;padding-top:22px;font-size:11px;letter-spacing:.2em;
+  #about .sig-out{margin-top:52px;padding-top:22px;font-size:12.5px;letter-spacing:.2em;
     text-transform:uppercase;opacity:.45;border-top:1px solid rgba(42,51,65,.16)}
   #aboutX{position:fixed;top:18px;right:18px;width:42px;height:42px;border-radius:21px;
     border:1px solid rgba(42,51,65,.22);background:#F3EEE0;color:#2A3341;
@@ -288,7 +291,7 @@
     -webkit-tap-highlight-color:transparent}
   #aboutX:hover{background:#E7E0CD}
 
-  #readBtn{position:fixed;left:20px;top:16px;z-index:22;font-size:10px;
+  #readBtn{position:fixed;left:20px;top:16px;z-index:22;font-size:12px;
     letter-spacing:.24em;text-transform:uppercase;color:#F6ECD8;background:none;
     border:0;font-family:inherit;cursor:pointer;opacity:0;pointer-events:auto;
     transition:opacity .8s,color .25s;text-shadow:0 1px 4px rgba(18,24,34,.85);
@@ -314,15 +317,15 @@
     -webkit-tap-highlight-color:transparent;cursor:pointer;padding:0 15px}
   #dockRow button.done{opacity:.4}
   #dockRow button.man{background:rgba(232,201,138,.2);border-color:rgba(232,201,138,.6);
-    color:#F2DDAE;font-size:12.5px;letter-spacing:.14em;padding:0 19px}
+    color:#F2DDAE;font-size:14px;letter-spacing:.14em;padding:0 19px}
   #dockRow button:active{background:rgba(246,236,216,.3)}
 
   /* touch layout: the desktop key hints and telemetry are meaningless here */
   body.touch #keys, body.touch #index{display:none}
   body.touch #hud{padding-bottom:76px}
   body.touch #talk{bottom:86px;width:min(620px,92vw);padding:18px 20px 16px}
-  body.touch #talk .say{font-size:15px;line-height:1.7}
-  body.touch .pin{font-size:9.5px}
+  body.touch #talk .say{font-size:16.5px;line-height:1.7}
+  body.touch .pin{font-size:12px}
 
   /* ---------- field index (M) ---------- */
   #index{position:fixed;left:20px;top:50%;transform:translate(-14px,-50%);z-index:30;
@@ -330,17 +333,17 @@
     background:rgba(18,24,34,.86);backdrop-filter:blur(14px);border-radius:13px;
     border:1px solid rgba(246,236,216,.16)}
   #index.on{opacity:1;transform:translate(0,-50%);pointer-events:auto}
-  #index h4{font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;
+  #index h4{font-size:12px;letter-spacing:.26em;text-transform:uppercase;
     font-weight:400;color:#E8C98A;margin-bottom:10px;padding-left:9px}
   #index button{display:flex;justify-content:space-between;align-items:baseline;
     width:100%;background:none;border:0;color:#F6ECD8;font-family:inherit;
-    font-size:12.5px;letter-spacing:.10em;padding:8px 9px;border-radius:8px;
+    font-size:14px;letter-spacing:.10em;padding:8px 9px;border-radius:8px;
     cursor:pointer;transition:.18s;text-align:left}
   #index button:hover{background:rgba(246,236,216,.13)}
   #index button.done{opacity:.42}
   #index button.man{color:#F2DDAE}
-  #index button em{font-style:normal;opacity:.45;font-size:10.5px;letter-spacing:.14em}
-  #index .hint{font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  #index button em{font-style:normal;opacity:.45;font-size:12px;letter-spacing:.14em}
+  #index .hint{font-size:12px;letter-spacing:.18em;text-transform:uppercase;
     opacity:.38;padding:9px 9px 2px;line-height:1.7}
 
   /* ---------- the old man speaking ---------- */
@@ -359,15 +362,20 @@
   #talkX:hover{opacity:1;background:rgba(246,236,216,.18)}
   body.locked #talkX{opacity:.22;pointer-events:none}
   body.touch #talkX{width:38px;height:38px;border-radius:19px;opacity:.8}
-  #talk .who{font-size:11px;letter-spacing:.26em;text-transform:uppercase;
+  #talk .who{font-size:12.5px;letter-spacing:.26em;text-transform:uppercase;
     color:#E8C98A;margin-bottom:12px}
   #talk .who span{opacity:.5;letter-spacing:.16em}
-  #talk .say{font-size:15.5px;line-height:1.75;color:#F6ECD8;opacity:.94}
-  #talk .cnt{margin-top:14px;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;
+  #talk .say{font-size:17px;line-height:1.75;color:#F6ECD8;opacity:.94}
+  #talk .cnt{margin-top:14px;font-size:12px;letter-spacing:.22em;text-transform:uppercase;
     opacity:.42}
   #err{position:fixed;inset:0;z-index:60;display:none;padding:40px;background:#171d27;
     font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;line-height:1.7;
     color:#E8A0A0;white-space:pre-wrap;overflow:auto}
+  /* short screens: keep the title card readable without clipping */
+  @media (max-height:760px){
+    .blurb{font-size:16px;line-height:1.6} .blurb.sub{font-size:14.5px}
+    h1 em{margin-top:12px} .rule{margin:18px auto} #bar{margin:24px auto 10px} #enter{margin-top:20px}
+  }
 </style>
 </head>
 <body>
