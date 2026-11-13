@@ -68,3 +68,7 @@ under Bulgaria's Medicinal Plants Act (2002).
 - [Samardala — the valley](https://samardala.com/): interactive procedural landscape
   with the herb's story told in eight parts.
 - [The full account](https://samardala.com/#about): long-form history and method.
+
+## Author
+
+Made by [Zhelyo Ivanov](https://www.kiwee.one/) (Жельо Иванов).

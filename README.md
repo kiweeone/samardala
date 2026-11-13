@@ -1,5 +1,7 @@
 # samardala.com
 
+By [Zhelyo Ivanov](https://www.kiwee.one/) · live at [samardala.com](https://samardala.com)
+
 An interactive valley built around **samardala** (*Allium siculum* subsp.
 *bulgaricum*, Bulgarian honey garlic) — the herb of the Stara Zagora region.
 Eight fields are marked with carved posts; дядо Жельо walks between them and
