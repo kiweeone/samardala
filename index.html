@@ -343,19 +343,19 @@
   #dock.on{opacity:1;transform:none}
   #dockWrap{display:flex;align-items:center;gap:10px;width:max-content;max-width:100%;margin:0 auto;
     padding:7px 8px 7px 18px;pointer-events:auto;
-    background:rgba(14,19,28,.84);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-    border:1px solid rgba(246,236,216,.24);border-radius:999px;box-shadow:0 10px 34px rgba(0,0,0,.38)}
-  #dockLabel{font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;color:#E8C98A;white-space:nowrap}
+    background:rgba(14,19,28,.38);backdrop-filter:blur(16px) saturate(1.2);-webkit-backdrop-filter:blur(16px) saturate(1.2);
+    border:1px solid rgba(246,236,216,.22);border-radius:999px;box-shadow:0 6px 24px rgba(0,0,0,.16)}
+  #dockLabel{font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;color:#F0D49A;white-space:nowrap;text-shadow:0 1px 3px rgba(10,14,20,.7)}
   #dockRow{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;
     scrollbar-width:none;padding:2px;min-width:0}
   #dockRow::-webkit-scrollbar{display:none}
   #dockRow button{flex:0 0 auto;min-width:46px;height:46px;border-radius:23px;
-    border:1px solid rgba(246,236,216,.42);background:rgba(246,236,216,.1);
-    color:#FBF4E4;font-family:inherit;font-size:16px;font-weight:600;letter-spacing:.06em;
+    border:1px solid rgba(246,236,216,.38);background:rgba(14,19,28,.22);
+    color:#FBF4E4;text-shadow:0 1px 3px rgba(10,14,20,.6);font-family:inherit;font-size:16px;font-weight:600;letter-spacing:.06em;
     -webkit-tap-highlight-color:transparent;cursor:pointer;padding:0 15px;transition:background .2s,border-color .2s}
   #dockRow button:hover{background:rgba(246,236,216,.24);border-color:rgba(246,236,216,.7)}
   #dockRow button.done{opacity:.45}
-  #dockRow button.man{background:rgba(232,201,138,.28);border-color:rgba(232,201,138,.8);
+  #dockRow button.man{background:rgba(232,201,138,.22);border-color:rgba(232,201,138,.8);
     color:#F6E2B3;font-size:14px;letter-spacing:.14em;padding:0 19px;
     animation:dockGlow 1.8s ease-in-out 1.4s 3}
   #dockRow button:active{background:rgba(246,236,216,.34)}
@@ -370,7 +370,7 @@
   /* the controls button sits on its own, bottom-right, so it is easy to spot */
   #helpBtn{position:fixed;right:20px;bottom:24px;z-index:31;display:none;align-items:center;gap:8px;
     height:44px;padding:0 16px 0 6px;border-radius:22px;cursor:pointer;font-family:inherit;font-size:15px;font-weight:600;
-    color:#FBF4E4;background:rgba(14,19,28,.84);border:1px solid rgba(246,236,216,.3);
+    color:#FBF4E4;background:rgba(14,19,28,.38);border:1px solid rgba(246,236,216,.26);text-shadow:0 1px 3px rgba(10,14,20,.6);
     backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
   #helpBtn.on{display:inline-flex}
   #helpBtn span{display:grid;place-items:center;width:32px;height:32px;border-radius:16px;background:#E8C98A;color:#1C2431;font-weight:800}
@@ -400,7 +400,7 @@
   /* desktop: key hints sit just above the dock, on a readable backing */
   body:not(.touch) #hud{padding-bottom:108px}
   body:not(.touch) #talk{bottom:112px}
-  #hud #keys{background:rgba(14,19,28,.8);padding:10px 14px;border-radius:12px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  #hud #keys{background:rgba(14,19,28,.6);padding:10px 14px;border-radius:12px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
     opacity:0;transform:translateY(8px);transition:opacity .4s,transform .4s;margin:0 auto;text-align:center;max-width:min(980px,100%)}
   #hud.keys #keys{opacity:1;transform:none}
   #hud{justify-content:center!important}
