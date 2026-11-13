@@ -311,29 +311,52 @@
   body.locked #readBtn{pointer-events:none}
   body.touch #readBtn{top:calc(12px + env(safe-area-inset-top));left:16px}
 
-  /* ---------- touch: the field dock ---------- */
-  #dock{position:fixed;left:0;right:0;bottom:0;z-index:29;display:none;
-    padding:12px 12px calc(12px + env(safe-area-inset-bottom));
-    background:linear-gradient(to top, rgba(12,17,25,.92) 40%, rgba(12,17,25,0));
-    opacity:0;transition:opacity .6s}
-  body.touch #dock{display:block}
-  body.touch #dock.on{opacity:1}
-  #dockRow{display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;
-    scrollbar-width:none;padding:2px}
+  /* ---------- the field dock: the main navigation, on every device ---------- */
+  #dock{position:fixed;left:0;right:0;bottom:0;z-index:29;
+    padding:0 16px 18px;pointer-events:none;opacity:0;transform:translateY(16px);
+    transition:opacity .6s,transform .6s}
+  #dock.on{opacity:1;transform:none}
+  #dockWrap{display:flex;align-items:center;gap:10px;width:max-content;max-width:100%;margin:0 auto;
+    padding:7px 8px 7px 18px;pointer-events:auto;
+    background:rgba(14,19,28,.84);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border:1px solid rgba(246,236,216,.24);border-radius:999px;box-shadow:0 10px 34px rgba(0,0,0,.38)}
+  #dockLabel{font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;color:#E8C98A;white-space:nowrap}
+  #dockRow{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;padding:2px;min-width:0}
   #dockRow::-webkit-scrollbar{display:none}
   #dockRow button{flex:0 0 auto;min-width:46px;height:46px;border-radius:23px;
-    border:1px solid rgba(246,236,216,.28);background:rgba(28,36,49,.8);
-    color:#F6ECD8;font-family:inherit;font-size:15px;letter-spacing:.08em;
-    -webkit-tap-highlight-color:transparent;cursor:pointer;padding:0 15px}
-  #dockRow button.done{opacity:.4}
-  #dockRow button.man{background:rgba(232,201,138,.2);border-color:rgba(232,201,138,.6);
-    color:#F2DDAE;font-size:14px;letter-spacing:.14em;padding:0 19px}
-  #dockRow button:active{background:rgba(246,236,216,.3)}
+    border:1px solid rgba(246,236,216,.42);background:rgba(246,236,216,.1);
+    color:#FBF4E4;font-family:inherit;font-size:16px;font-weight:600;letter-spacing:.06em;
+    -webkit-tap-highlight-color:transparent;cursor:pointer;padding:0 15px;transition:background .2s,border-color .2s}
+  #dockRow button:hover{background:rgba(246,236,216,.24);border-color:rgba(246,236,216,.7)}
+  #dockRow button.done{opacity:.45}
+  #dockRow button.man{background:rgba(232,201,138,.28);border-color:rgba(232,201,138,.8);
+    color:#F6E2B3;font-size:14px;letter-spacing:.14em;padding:0 19px;
+    animation:dockGlow 1.8s ease-in-out 1.4s 3}
+  #dockRow button:active{background:rgba(246,236,216,.34)}
+  @keyframes dockGlow{50%{box-shadow:0 0 0 7px rgba(232,201,138,.25)}}
+  /* while the mouse is captured for looking around, the dock can't be clicked — say so */
+  body.locked #dockRow{opacity:.55;pointer-events:none}
+  body.locked #dockLabel::after{content:" · Esc to use";color:#F6ECD8;opacity:.7;letter-spacing:.12em}
+  body.touch #dock{padding:0 10px calc(10px + env(safe-area-inset-bottom))}
+  body.touch #dockWrap{padding-left:14px;gap:8px}
+  /* phones: wrap onto two rows rather than hiding buttons off-screen */
+  @media (max-width:560px){
+    #dockWrap{flex-direction:column;gap:6px;border-radius:22px;padding:9px 8px 8px;width:100%}
+    #dockLabel{font-size:11.5px}
+    #dockRow{flex-wrap:wrap;justify-content:center;overflow:visible}
+    #dockRow button{min-width:42px;height:42px;padding:0 12px}
+  }
+  body.touch #hud{padding-bottom:150px}
+  body.touch #talk{bottom:158px}
+  /* desktop: key hints sit just above the dock, on a readable backing */
+  body:not(.touch) #hud{padding-bottom:86px}
+  body:not(.touch) #talk{bottom:92px}
+  #keys{background:rgba(14,19,28,.55);padding:8px 12px;border-radius:10px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 
   /* touch layout: the desktop key hints and telemetry are meaningless here */
   body.touch #keys, body.touch #index{display:none}
-  body.touch #hud{padding-bottom:76px}
-  body.touch #talk{bottom:86px;width:min(620px,92vw);padding:18px 20px 16px}
+  body.touch #talk{width:min(620px,92vw);padding:18px 20px 16px}
   body.touch #talk .say{font-size:16.5px;line-height:1.7}
   body.touch .pin{font-size:12px}
 
@@ -925,7 +948,7 @@
 
 <div id="pins"></div>
 
-<div id="dock"><div id="dockRow"></div></div>
+<div id="dock"><div id="dockWrap"><span id="dockLabel">Go to field</span><div id="dockRow"></div></div></div>
 
 <div id="index">
   <h4>The valley</h4>
@@ -7732,7 +7755,7 @@ let pinTick = 0;
 function updatePins(){
   if((pinTick++ % 3) !== 0) return;     // DOM writes; 20 Hz is plenty
   if($('#index').classList.contains('on')) refreshIndex();
-  if(IS_TOUCH) refreshDock();
+  if(dockEls) refreshDock();
   if(!pinEls){
     const host = $('#pins'); host.textContent='';
     pinEls = SAMARDALA.map((_,i)=>{
@@ -8007,9 +8030,9 @@ function bindInput(){
     $('#sig').classList.add('on');
     $('#readBtn').classList.add('on');
     setTimeout(()=>{ $('#veil').style.display='none'; }, 1700);
+    buildDock(); refreshDock();
+    $('#dock').classList.add('on');
     if(IS_TOUCH){
-      buildDock(); refreshDock();
-      $('#dock').classList.add('on');
       // land them at the first field rather than in an empty meadow with no
       // idea that dragging does anything
       setTimeout(travelToMan, 900);
