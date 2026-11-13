@@ -148,7 +148,7 @@
       No italics, little letter-spacing, a calm size scale: 13 / 17 / 19 / 21.   */
   @font-face{font-family:'Samardala Text';src:url('./fonts/literata.woff2') format('woff2');
     font-weight:300 900;font-style:normal;font-display:swap}
-  .card{position:relative;z-index:2;text-align:center;padding:32px 28px;max-width:720px;margin:auto;
+  .card{position:relative;z-index:2;text-align:center;padding:32px 28px;max-width:760px;margin:auto;
     font-family:'Samardala Text',Georgia,serif;color:#22303F}
   .card:before{content:"";position:absolute;inset:-70px -90px;z-index:-1;pointer-events:none;
     background:radial-gradient(closest-side,rgba(250,244,228,.7),rgba(250,244,228,0))}
@@ -187,6 +187,17 @@
   .howto kbd{flex:0 0 auto;min-width:112px;font-family:inherit;font-weight:650;font-size:15px;color:#22303F}
   .howto-t{font-size:14px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#3A4A5E;margin-top:28px}
   ul.t{display:none} body.touch ul.t{display:block} body.touch ul.d{display:none}
+  .howto.d{display:grid;grid-template-columns:1fr 1fr;column-gap:30px;max-width:660px;padding:10px 22px}
+  .howto.d li+li{border-top:0}
+  .howto.d li{border-bottom:1px solid rgba(34,48,63,.1)}
+  .howto.d kbd{min-width:108px}
+  @media (max-width:700px){ .howto.d{grid-template-columns:1fr} }
+  /* in-valley controls card (the ? button) — same list, light-on-dark */
+  #hud #keys{font-family:'Samardala Text',Georgia,serif;text-transform:none;letter-spacing:0;text-shadow:none;
+    font-size:15px;color:#F6ECD8;padding:14px 22px;max-width:620px}
+  .keylist{list-style:none;display:grid;grid-template-columns:1fr 1fr;column-gap:28px;text-align:left}
+  .keylist li{display:flex;gap:12px;align-items:baseline;padding:6px 0;border-bottom:1px solid rgba(246,236,216,.1)}
+  .keylist kbd{flex:0 0 auto;min-width:92px;font-family:inherit;font-weight:650;color:#E8C98A}
   @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 
   /* ---------- hud ---------- */
@@ -204,7 +215,7 @@
   body.locked #sig{pointer-events:none}
   body.touch #sig{top:calc(12px + env(safe-area-inset-top))}
   #hud .k{opacity:.65}
-  #keys span{display:inline-block;margin-right:14px}
+  #keys span{display:inline}
   #keys b{font-weight:600;opacity:.95}
   #tele{text-align:right;font-variant-numeric:tabular-nums;line-height:1.75}
   #tele .v{opacity:.95}
@@ -470,9 +481,19 @@
 
 <div id="hud">
   <div id="keys" class="k">
-    <span><b>WASD</b> walk</span><span><b>Shift</b> run</span><span><b>Mouse</b> look</span>
-    <span><b>F</b> fly</span><span><b>Space/Ctrl</b> up&#47;down</span>
-    <span><b>C</b> cinematic</span><span><b>M</b> list of stops</span><span><b>R</b> read</span><span><b>H</b> settings</span><span><b>?</b> hide this</span><span><b>Esc</b> release</span>
+    <ul class="keylist">
+      <li><kbd>Mouse</kbd><span>look around</span></li>
+      <li><kbd>W A S D</kbd><span>walk</span></li>
+      <li><kbd>Shift</kbd><span>run</span></li>
+      <li><kbd>F</kbd><span>fly</span></li>
+      <li><kbd>Space / Ctrl</kbd><span>up / down in flight</span></li>
+      <li><kbd>C</kbd><span>cinematic camera</span></li>
+      <li><kbd>M</kbd><span>list of stops</span></li>
+      <li><kbd>R</kbd><span>read the story</span></li>
+      <li><kbd>H</kbd><span>settings</span></li>
+      <li><kbd>Esc</kbd><span>free the mouse</span></li>
+      <li><kbd>?</kbd><span>show these controls</span></li>
+    </ul>
   </div>
   <div id="tele"></div>
 </div>
@@ -881,11 +902,17 @@
     <p class="hello-by">— дядо Жельо, your guide</p>
     <div class="howto-t">How to get around</div>
     <ul class="howto d">
-      <li><kbd>Mouse</kbd><span>look around (click the view first)</span></li>
-      <li><kbd>W A S D</kbd><span>walk · hold Shift to run</span></li>
-      <li><kbd>Stops bar</kbd><span>at the bottom — click a stop to go there</span></li>
-      <li><kbd>Esc</kbd><span>frees the mouse so you can click the bar</span></li>
-      <li><kbd>?</kbd><span>all controls, any time</span></li>
+      <li><kbd>Mouse</kbd><span>look around</span></li>
+      <li><kbd>W A S D</kbd><span>walk</span></li>
+      <li><kbd>Shift</kbd><span>run</span></li>
+      <li><kbd>F</kbd><span>fly</span></li>
+      <li><kbd>Space / Ctrl</kbd><span>up / down in flight</span></li>
+      <li><kbd>C</kbd><span>cinematic camera</span></li>
+      <li><kbd>M</kbd><span>list of stops</span></li>
+      <li><kbd>R</kbd><span>read the story</span></li>
+      <li><kbd>H</kbd><span>settings</span></li>
+      <li><kbd>Esc</kbd><span>free the mouse</span></li>
+      <li><kbd>?</kbd><span>show these controls</span></li>
     </ul>
     <ul class="howto t">
       <li><kbd>Drag</kbd><span>to look around</span></li>
