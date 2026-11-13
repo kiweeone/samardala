@@ -344,7 +344,6 @@
     border:1px solid rgba(246,236,216,.3);background:none;color:#F6ECD8;font-family:inherit;font-size:17px;font-weight:700}
   #keysBtn:hover,#hud.keys ~ #dock #keysBtn{background:rgba(246,236,216,.2)}
   #keysBtn{flex:none}
-  body.touch #keysBtn{display:none}
   #dockWrap{max-width:min(1180px,100%)}
   @keyframes dockGlow{50%{box-shadow:0 0 0 7px rgba(232,201,138,.25)}}
   /* while the mouse is captured for looking around, the dock can't be clicked — say so */
@@ -405,6 +404,16 @@
     background:rgba(18,24,34,.82);backdrop-filter:blur(14px);border-radius:14px;
     border:1px solid rgba(246,236,216,.16);transition:opacity .5s,transform .5s}
   #talk.on{opacity:1;transform:translate(-50%,0)}
+  body.travelling #talk.on{opacity:0;transform:translate(-50%,28px);transition:opacity .25s,transform .25s}
+  /* phone controls help — same look as the desktop key hints */
+  #touchHelp{position:fixed;left:50%;bottom:164px;transform:translate(-50%,10px);z-index:30;width:min(92vw,420px);
+    padding:14px 18px;border-radius:14px;background:rgba(14,19,28,.88);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    border:1px solid rgba(246,236,216,.2);color:#F6ECD8;font-size:15px;line-height:1.55;opacity:0;pointer-events:none;
+    transition:opacity .4s,transform .4s}
+  #touchHelp.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+  #touchHelp b{color:#E8C98A;font-weight:600}
+  #touchHelp div+div{margin-top:4px}
+  body:not(.touch) #touchHelp{display:none}
   /*  The panel itself stays click-through so it never eats a look-drag; only
       the button takes pointer events.                                       */
   #talkX{position:absolute;top:10px;right:10px;width:34px;height:34px;
@@ -968,7 +977,7 @@
 
 <div id="pins"></div>
 
-<div id="dock"><div id="dockWrap"><span id="dockLabel">Stops on the walk</span><div id="dockRow"></div><button id="keysBtn" title="Keyboard controls" aria-label="Keyboard controls">?</button></div></div>
+<div id="dock"><div id="dockWrap"><span id="dockLabel">Stops on the walk</span><div id="dockRow"></div><button id="keysBtn" title="Controls" aria-label="Show controls">?</button></div></div>
 
 <div id="index">
   <h4>The valley</h4>
@@ -976,6 +985,12 @@
   <div class="hint">M to close · click a pin in the view</div>
 </div>
 
+<div id="touchHelp" role="note">
+  <div><b>Drag</b> to look around</div>
+  <div><b>Tap the ground</b> to walk there</div>
+  <div><b>Tap a number</b> to go to that stop</div>
+  <div><b>дядо Жельо</b> takes you to the old man</div>
+</div>
 <div id="talk">
   <button id="talkX" aria-label="close">&#215;</button>
   <div class="who">дядо Жельо <span>· Колена</span></div>
@@ -7507,6 +7522,7 @@ function riverOnScreen(fr, cp){
   return false;
 }
 
+let wasTravelling = false;
 function frame(now){
   let dt = Math.min(0.05, (now-last)/1000); last = now;
   if(State.paused) dt = 0;
@@ -7515,6 +7531,9 @@ function frame(now){
   updateWind(dt, camera.position);
   walker.update(dt, tAcc);
   camera.updateMatrixWorld(true);
+  // the speech panel steps aside while you glide between stops, and comes back on arrival
+  const trav = !!walker.travel;
+  if(trav !== wasTravelling){ wasTravelling = trav; document.body.classList.toggle('travelling', trav); }
 
   G.uTime.value = tAcc;
   G.uCamPos.value.copy(camera.position);
@@ -7681,6 +7700,21 @@ const _pv = new THREE.Vector3();
 /*  Landing spots.  For a field, stop short of the totem on the side you
     approached from — inside the 0.80r trigger but not on top of the post.
     For Жельо, six metres off, facing him.                                  */
+/*  Tap-to-walk: march along the camera ray until it meets the terrain, then
+    glide there.  Sky and anything beyond ~600 m is ignored.                 */
+const _tapRay = new THREE.Raycaster(), _tapNdc = new THREE.Vector2();
+function walkToScreen(cx, cy){
+  const r = renderer.domElement.getBoundingClientRect();
+  _tapNdc.set(((cx - r.left) / r.width) * 2 - 1, -((cy - r.top) / r.height) * 2 + 1);
+  _tapRay.setFromCamera(_tapNdc, camera);
+  const o = _tapRay.ray.origin, d = _tapRay.ray.direction;
+  if(d.y > -0.01) return false;
+  for(let t = 2; t < 600; t += 1.5){
+    const x = o.x + d.x*t, z = o.z + d.z*t;
+    if(o.y + d.y*t <= sampleHeight(x, z)){ walker.goTo(x, z, x + d.x*10, z + d.z*10); return true; }
+  }
+  return false;
+}
 function travelToField(i){
   const st = SAMARDALA[i];
   // he is waiting when you land, rather than popping in beside you
@@ -7996,12 +8030,12 @@ function bindInput(){
       barely moves is treated as a tap and left alone, so the pins and the
       dock stay reachable.  Two fingers are ignored: pinch-zoom on a fixed
       full-screen canvas does nothing useful and only fights the drag.     */
-  let touchId = null, tX = 0, tY = 0, tMoved = 0;
+  let touchId = null, tX = 0, tY = 0, tMoved = 0, tStart = 0;
   cv.addEventListener('touchstart', e=>{
     audio.resume();
     if(touchId !== null || e.touches.length !== 1) return;
     const t = e.changedTouches[0];
-    touchId = t.identifier; tX = t.clientX; tY = t.clientY; tMoved = 0;
+    touchId = t.identifier; tX = t.clientX; tY = t.clientY; tMoved = 0; tStart = performance.now();
   }, {passive:true});
   cv.addEventListener('touchmove', e=>{
     if(touchId === null) return;
@@ -8013,7 +8047,13 @@ function bindInput(){
     if(tMoved > 6){ e.preventDefault(); walker.look(dx*2.4, dy*2.4); }
   }, {passive:false});
   const endTouch = e=>{
-    for(const c of e.changedTouches) if(c.identifier === touchId) touchId = null;
+    for(const c of e.changedTouches) if(c.identifier === touchId){
+      // a quick tap that didn't drag: walk to that spot on the ground
+      if(e.type === 'touchend' && tMoved <= 6 && performance.now() - tStart < 350){
+        if(walkToScreen(c.clientX, c.clientY)) $('#touchHelp').classList.remove('on');
+      }
+      touchId = null;
+    }
   };
   cv.addEventListener('touchend', endTouch, {passive:true});
   cv.addEventListener('touchcancel', endTouch, {passive:true});
@@ -8057,7 +8097,8 @@ function bindInput(){
     setTimeout(()=>{ $('#veil').style.display='none'; }, 1700);
     buildDock(); refreshDock();
     $('#dock').classList.add('on');
-    $('#keysBtn').addEventListener('click', ()=> $('#hud').classList.toggle('keys'));
+    $('#keysBtn').addEventListener('click', ()=> IS_TOUCH ? $('#touchHelp').classList.toggle('on') : $('#hud').classList.toggle('keys'));
+    if(IS_TOUCH){ setTimeout(()=>$('#touchHelp').classList.add('on'), 1800); setTimeout(()=>$('#touchHelp').classList.remove('on'), 10000); }
     if(!IS_TOUCH){ $('#hud').classList.add('keys'); setTimeout(()=>$('#hud').classList.remove('keys'), 9000); }
     if(IS_TOUCH){
       // land them at the first field rather than in an empty meadow with no
